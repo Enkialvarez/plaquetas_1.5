@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAB. VIRTUAL ÁLVAREZ 2026 — Unidad 2: Coágulo Plaquetario</title>
+<style>
+  :root {
+    --bg-primary: #f8fafc;
+    --bg-section: #ffffff;
+    --accent-blue: #2563eb;
+    --accent-blue-light: #dbeafe;
+    --accent-red: #dc2626;
+    --accent-red-light: #fee2e2;
+    --accent-green: #16a34a;
+    --accent-green-light: #dcfce7;
+    --accent-yellow: #f59e0b;
+    --accent-yellow-light: #fef3c7;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+    --radius: 12px;
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-main);
+    background: var(--bg-primary);
+    color: var(--text-dark);
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+  header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: #fff;
+    padding: 2rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    letter-spacing: 2px;
+    margin-bottom: 0.3rem;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+  }
+  header h2 {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    font-weight: 400;
+    opacity: 0.95;
+  }
+  header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+  .hero-svg {
+    max-width: 220px;
+    margin: 1rem auto 0;
+  }
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    box-shadow: var(--shadow);
+  }
+  nav a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 0.85rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    transition: background .2s;
+  }
+  nav a:hover { background: var(--accent-blue-light); color: var(--accent-blue); }
+  .container { max-width: 960px; margin: 0 auto; padding: 1rem; }
+  section {
+    background: var(--bg-section);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  section h2 {
+    font-size: 1.35rem;
+    color: var(--accent-blue);
+    border-bottom: 3px solid var(--accent-blue-light);
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  section h3 { font-size: 1.1rem; color: var(--text-dark); margin: 1rem 0 0.5rem; }
+  .label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+  .label-diag { background: var(--accent-yellow-light); color: #92400e; }
+  .label-dev { background: var(--accent-blue-light); color: #1e40af; }
+  .label-close { background: var(--accent-green-light); color: #166534; }
+  .label-sim { background: var(--accent-red-light); color: #991b1b; }
+
+  .quiz-container .question {
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .quiz-container .question p { font-weight: 600; margin-bottom: 0.5rem; }
+  .quiz-container .options button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.4rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    transition: all .2s;
+    font-size: 0.95rem;
+  }
+  .quiz-container .options button:hover { background: #f8fafc; }
+  .quiz-container .options button.correct { background: var(--accent-green-light); border-color: var(--accent-green); }
+  .quiz-container .options button.wrong { background: var(--accent-red-light); border-color: var(--accent-red); }
+  .score-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+  .score-bar > div { height: 100%; background: var(--accent-green); width: 0%; transition: width .4s; }
+  .score-text { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px -4px rgba(0,0,0,0.1); }
+  .card h4 { color: var(--accent-blue); margin-bottom: 0.5rem; font-size: 1rem; }
+  .card p { font-size: 0.9rem; color: var(--text-muted); }
+
+  .match-container { display: flex; flex-wrap: wrap; gap: 1rem; }
+  .match-column { flex: 1; min-width: 240px; }
+  .match-item {
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+    user-select: none;
+    transition: all .2s;
+  }
+  .match-item:hover { border-color: var(--accent-blue); }
+  .match-item.selected { border-color: var(--accent-blue); background: var(--accent-blue-light); }
+  .match-item.matched { border-color: var(--accent-green); background: var(--accent-green-light); cursor: default; }
+  .match-item.wrong-match { border-color: var(--accent-red); background: var(--accent-red-light); animation: shake .4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+  .crossword-container { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
+  .crossword-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 2px; }
+  .crossword-grid input {
+    width: 28px; height: 28px; text-align: center; text-transform: uppercase;
+    border: 1px solid #cbd5e1; border-radius: 3px; font-weight: 700; font-size: 0.9rem;
+    padding: 0;
+  }
+  .crossword-grid input.block { background: #e2e8f0; border-color: #e2e8f0; cursor: default; }
+  .crossword-grid input:focus { outline: 2px solid var(--accent-blue); border-color: var(--accent-blue); }
+  .crossword-grid input.ok { background: var(--accent-green-light); border-color: var(--accent-green); }
+  .crossword-grid input.err { background: var(--accent-red-light); border-color: var(--accent-red); }
+  .crossword-clues { flex: 1; min-width: 240px; font-size: 0.9rem; }
+  .crossword-clues h4 { margin-bottom: 0.5rem; color: var(--accent-blue); }
+  .crossword-clues ul { list-style: none; padding-left: 0; }
+  .crossword-clues li { margin-bottom: 0.4rem; padding-left: 1.2rem; position: relative; }
+  .crossword-clues li::before { content: "•"; position: absolute; left: 0; color: var(--accent-blue); }
+
+  .simulator-panel { background: #f8fafc; border-radius: 8px; padding: 1rem; border: 1px solid var(--border); }
+  .sim-svg { width: 100%; max-width: 600px; display: block; margin: 0 auto; }
+  .sim-tooltip {
+    position: absolute;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 0.8rem;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+    max-width: 260px;
+    display: none;
+    z-index: 50;
+  }
+  .sim-tooltip h5 { margin-bottom: 0.3rem; color: var(--accent-blue); }
+  .sim-area { position: relative; display: inline-block; width: 100%; text-align: center; }
+
+  .canvas-wrap { background: #0f172a; border-radius: 8px; overflow: hidden; position: relative; margin: 1rem 0; }
+  .canvas-wrap canvas { display: block; width: 100%; height: 240px; }
+  .canvas-wrap canvas#canvas-sim { height: 320px; } /* el simulador principal es más alto: evita compresión y descalibra de clics */
+  .canvas-controls { display: flex; gap: 0.5rem; justify-content: center; padding: 0.5rem; background: #1e293b; }
+  .canvas-controls button {
+    background: #334155; color: #fff; border: none; border-radius: 6px; padding: 0.4rem 0.8rem;
+    cursor: pointer; font-size: 0.85rem;
+  }
+  .canvas-controls button:hover { background: #475569; }
+  .canvas-controls button.active { background: var(--accent-blue); }
+
+  .case-box { background: var(--accent-yellow-light); border-left: 4px solid var(--accent-yellow); padding: 1rem; border-radius: 0 8px 8px 0; }
+  .case-box h4 { color: #92400e; margin-bottom: 0.5rem; }
+
+  .map-conceptual { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem; }
+  .map-box {
+    background: #fff; border: 2px dashed var(--border); border-radius: 8px; padding: 0.8rem;
+    min-height: 80px; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer;
+  }
+  .map-box.revealed { border-style: solid; border-color: var(--accent-green); background: var(--accent-green-light); font-weight: 600; }
+
+  .resource-list { list-style: none; padding: 0; }
+  .resource-list li { margin-bottom: 0.6rem; padding: 0.6rem; background: #f1f5f9; border-radius: 6px; font-size: 0.9rem; }
+  .resource-list a { color: var(--accent-blue); text-decoration: none; font-weight: 500; }
+  .resource-list a:hover { text-decoration: underline; }
+  .offline-note { font-size: 0.8rem; color: var(--text-muted); background: #f1f5f9; padding: 0.4rem 0.6rem; border-radius: 4px; display: inline-block; margin-top: 0.3rem; }
+
+  .btn-primary {
+    background: var(--accent-blue); color: #fff; border: none; border-radius: 6px; padding: 0.6rem 1.2rem;
+    cursor: pointer; font-size: 0.95rem; transition: background .2s; margin-top: 0.5rem;
+  }
+  .btn-primary:hover { background: #1e40af; }
+  .btn-secondary {
+    background: #fff; color: var(--accent-blue); border: 1px solid var(--accent-blue); border-radius: 6px;
+    padding: 0.6rem 1.2rem; cursor: pointer; font-size: 0.95rem; margin-top: 0.5rem;
+  }
+  .btn-secondary:hover { background: var(--accent-blue-light); }
+
+  footer { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 0.85rem; }
+  @media (max-width: 600px) {
+    .crossword-grid input { width: 22px; height: 22px; font-size: 0.75rem; }
+    nav a { font-size: 0.75rem; padding: 0.3rem 0.5rem; }
+  }
+  .hidden { display: none; }
+  .fade-in { animation: fadeIn .5s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .reading-text { font-size: 0.95rem; line-height: 1.8; background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid var(--border); }
+  .reading-text strong { color: var(--accent-blue); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>LAB. VIRTUAL ÁLVAREZ 2026</h1>
+  <h2>BIÓL. ENRIQUE TORRES ALVAREZ — CETIS 43, XOCHITEPEC, MORELOS</h2>
+  <span class="badge">CNEyT III — DGETI</span>
+  <div class="hero-svg">
+    <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-label="Estudiante en laboratorio">
+      <defs>
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0"/>
+          <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0.2"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="200" height="160" fill="url(#bgGrad)" rx="12"/>
+      <!-- Mesa -->
+      <rect x="20" y="120" width="160" height="10" fill="#94a3b8" rx="3"/>
+      <rect x="30" y="130" width="8" height="20" fill="#64748b"/>
+      <rect x="162" y="130" width="8" height="20" fill="#64748b"/>
+      <!-- Microscopio -->
+      <path d="M85 120 L85 90 L95 90 L95 120" fill="#334155"/>
+      <rect x="80" y="85" width="20" height="8" fill="#1e293b" rx="2"/>
+      <rect x="82" y="70" width="16" height="18" fill="#0ea5e9" opacity="0.8" rx="2"/>
+      <circle cx="90" cy="60" r="12" fill="#0ea5e9" opacity="0.3"/>
+      <circle cx="90" cy="60" r="6" fill="#0ea5e9" opacity="0.6"/>
+      <!-- Estudiante silueta -->
+      <circle cx="140" cy="55" r="14" fill="#fff" opacity="0.9"/>
+      <path d="M140 72 L140 110 L125 130 M140 110 L155 130" stroke="#fff" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.9"/>
+      <path d="M140 72 L140 90 L120 100" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9"/>
+      <!-- Ocular movimiento -->
+      <circle cx="90" cy="60" r="12" fill="none" stroke="#60a5fa" stroke-width="1.5" opacity="0.6">
+        <animate attributeName="r" values="12;14;12" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+  <p style="font-size:0.95rem; margin-top:0.8rem; opacity:0.9;">Segundo Parcial — Análisis de Serie Blanca y Hemostasia<br>Unidad 2: Coágulo Plaquetario</p>
+</header>
+
+<nav>
+  <a href="#diag">Diagnóstica</a>
+  <a href="#intro">Introducción</a>
+  <a href="#dev1">Desarrollo 1</a>
+  <a href="#dev2">Desarrollo 2</a>
+  <a href="#dev3">Desarrollo 3</a>
+  <a href="#dev4">Desarrollo 4</a>
+  <a href="#dev5">Desarrollo 5</a>
+  <a href="#dev6">Desarrollo 6</a>
+  <a href="#sim">Simulador</a>
+  <a href="#close1">Cierre 1</a>
+  <a href="#close2">Cierre 2</a>
+  <a href="#close3">Cierre 3</a>
+  <a href="#glosario">Glosario</a>
+</nav>
+
+<div class="container">
+
+  <!-- ACTIVIDAD DIAGNÓSTICA -->
+  <section id="diag">
+    <span class="label label-diag">Actividad Diagnóstica</span>
+    <h2>¿Qué sabes de plaquetas y hemostasia?</h2>
+    <p>Responde estas preguntas para explorar tus conocimientos previos. Al finalizar verás tu puntuación.</p>
+    <div class="quiz-container" id="quiz-diag"></div>
+    <div class="score-bar"><div id="score-diag-bar"></div></div>
+    <div class="score-text" id="score-diag-text">0 / 5 correctas</div>
+    <button class="btn-secondary" onclick="resetQuiz('diag')">Reiniciar</button>
+  </section>
+
+  <!-- INTRODUCCIÓN -->
+  <section id="intro">
+    <h2>Introducción: La hemostasia, el "tapón" que nos salva</h2>
+    <p class="reading-text">
+      Imagina que un vaso sanguíneo es como una <strong>manguera de agua</strong>. Si se rompe, el agua (la sangre) se sale. El cuerpo necesita un <strong>tapón</strong> rápido para detener la fuga. Ese proceso se llama <strong>hemostasia</strong> y tiene tres pasos principales: <br><br>
+      1. <strong>Vasoconstricción</strong> — el vaso se encoge como si lo apretaras con los dedos.<br>
+      2. <strong>Tapón plaquetario</strong> — las plaquetas (células pequeñas sin núcleo) se pegan al sitio de la herida como ladrillos formando una pared provisional.<br>
+      3. <strong>Coagulación</strong> — una red de <strong>fibrina</strong> (como cemento) refuerza el tapón y lo vuelve sólido.<br><br>
+      Cuando algo falla en estos pasos, aparecen las <strong>alteraciones cuantitativas de plaquetas</strong>: si hay muy pocas, sangramos con facilidad (<strong>trombocitopenia</strong>); si hay demasiadas, podemos formar coágulos peligrosos (<strong>trombocitosis</strong>).
+    </p>
+    <div style="margin-top:1rem;">
+      <strong>Recursos de apoyo verificados:</strong>
+      <ul class="resource-list">
+        <li>
+          📖 <a href="https://www.msdmanuals.com/es/hogar/trastornos-de-la-sangre/trastornos-de-las-plaquetas/introducci%C3%B3n-a-la-trombocitopenia" target="_blank">Manual MSD — Introducción a la trombocitopenia</a> <span class="offline-note">(lectura en línea)</span>
+        </li>
+        <li>
+          📖 <a href="https://www.osmosis.org/learn/es/Coagulation_(secondary_hemostasis)" target="_blank">Osmosis — Coagulación (hemostasia secundaria)</a> <span class="offline-note">(texto + ilustraciones)</span>
+        </li>
+        <li>
+          📖 <a href="https://estudyando.com/hemostasia-proceso-de-coagulacion-formacion-de-plaquetas-y-condiciones-de-coagulacion/" target="_blank">Estudyando — Resumen de hemostasia</a> <span class="offline-note">(lectura en línea)</span>
+        </li>
+      </ul>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="canvas-hemostasia"></canvas>
+      <div class="canvas-controls">
+        <button id="btn-vaso" class="active" onclick="setPhase(0)">1. Vaso roto</button>
+        <button id="btn-tapon" onclick="setPhase(1)">2. Tapón plaquetario</button>
+        <button id="btn-fibrina" onclick="setPhase(2)">3. Red de fibrina</button>
+        <button id="btn-fibrino" onclick="setPhase(3)">4. Fibrinólisis</button>
+      </div>
+    </div>
+    <p style="font-size:0.85rem; color:var(--text-muted); text-align:center; margin-top:0.3rem;">Simulación visual interactiva (funciona sin internet). Usa los botones para ver cada fase.</p>
+  </section>
+
+  <!-- DESARROLLO 1: CUESTIONARIO DE COMPRENSIÓN DE LECTURA -->
+  <section id="dev1">
+    <span class="label label-dev">Actividad de Desarrollo 1</span>
+    <h2>Lectura guiada: Las plaquetas en la formación de fibrina</h2>
+    <p class="reading-text">
+      Cuando un vaso sanguíneo se lesiona, las plaquetas circulantes se adhieren al <strong>colágeno</strong> expuesto del subendotelio gracias al <strong>factor von Willebrand</strong>. Esta adhesión inicia su activación: cambian de forma, liberan el contenido de sus gránulos (ADP, serotonina, tromboxano A2) y reclutan más plaquetas para formar el <strong>tapón plaquetario</strong>.<br><br>
+      Simultáneamente, la <strong>cascada de coagulación</strong> se activa por dos vías: la <strong>extrínseca</strong> (factor tisular liberado por células dañadas) y la <strong>intrínseca</strong> (contacto con superficies cargadas negativamente). Ambas convergen en la <strong>vía común</strong>, donde la <strong>trombina</strong> convierte el fibrinógeno soluble en <strong>fibrina insoluble</strong>. La fibrina se entrelaza como una red de pesca, atrapando eritrocitos y plaquetas, y creando el <strong>coágulo definitivo</strong>.<br><br>
+      <em>El factor XIII estabiliza esta red mediante enlaces cruzados, y cuando el vaso se repara, la <strong>plasmina</strong> (enzima fibrinolítica) degrada la fibrina para restablecer el flujo sanguíneo.</em>
+    </p>
+    <div class="quiz-container" id="quiz-dev1"></div>
+    <div class="score-bar"><div id="score-dev1-bar"></div></div>
+    <div class="score-text" id="score-dev1-text">0 / 4 correctas</div>
+    <button class="btn-secondary" onclick="resetQuiz('dev1')">Reiniciar</button>
+  </section>
+
+  <!-- DESARROLLO 2: QUIZ INTERACTIVO MC -->
+  <section id="dev2">
+    <span class="label label-dev">Actividad de Desarrollo 2</span>
+    <h2>Quiz interactivo: ¿Cuál es la respuesta correcta?</h2>
+    <p>Selecciona la opción correcta. Recibirás retroalimentación inmediata.</p>
+    <div class="quiz-container" id="quiz-dev2"></div>
+    <div class="score-bar"><div id="score-dev2-bar"></div></div>
+    <div class="score-text" id="score-dev2-text">0 / 5 correctas</div>
+    <button class="btn-secondary" onclick="resetQuiz('dev2')">Reiniciar</button>
+  </section>
+
+  <!-- DESARROLLO 3: VIDEO EDUCATIVO CON PREGUNTAS GUÍA -->
+  <section id="dev3">
+    <span class="label label-dev">Actividad de Desarrollo 3</span>
+    <h2>Video-animación: Otras células sanguíneas y su función en la hemostasia</h2>
+    <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">Observa la animación y responde las preguntas guía. (Funciona sin internet — es una animación integrada).</p>
+    <div class="canvas-wrap">
+      <canvas id="canvas-cells"></canvas>
+      <div class="canvas-controls">
+        <button onclick="toggleCellsAnim()" id="btn-cells">⏯ Reproducir / Pausar</button>
+        <button onclick="resetCellsAnim()">↺ Reiniciar</button>
+      </div>
+    </div>
+    <div class="quiz-container" id="quiz-dev3"></div>
+    <div class="score-bar"><div id="score-dev3-bar"></div></div>
+    <div class="score-text" id="score-dev3-text">0 / 4 correctas</div>
+    <button class="btn-secondary" onclick="resetQuiz('dev3')">Reiniciar</button>
+  </section>
+
+  <!-- DESARROLLO 4: CRUCIGRAMA INTERACTIVO -->
+  <section id="dev4">
+    <span class="label label-dev">Actividad de Desarrollo 4</span>
+    <h2>Crucigrama: Términos de la hemostasia</h2>
+    <p>Completa el crucigrama horizontal y vertical. Luego presiona "Verificar".</p>
+    <div class="crossword-container">
+      <div>
+        <div class="crossword-grid" id="crossword-grid"></div>
+        <div style="margin-top:0.8rem; text-align:center;">
+          <button class="btn-primary" onclick="checkCrossword()">Verificar</button>
+          <button class="btn-secondary" onclick="solveCrossword()">Mostrar solución</button>
+          <button class="btn-secondary" onclick="clearCrossword()">Limpiar</button>
+        </div>
+      </div>
+      <div class="crossword-clues">
+        <h4>Horizontales →</h4>
+        <ul>
+          <li><strong>1.</strong> Proteína que forma la red que atrapa células sanguíneas (7 letras)</li>
+          <li><strong>4.</strong> Disminución del número de plaquetas (15 letras)</li>
+          <li><strong>6.</strong> Células sanguíneas encargadas de transportar oxígeno (11 letras)</li>
+          <li><strong>8.</strong> Vaso que lleva sangre hacia el corazón (4 letras)</li>
+        </ul>
+        <h4 style="margin-top:1rem;">Verticales ↓</h4>
+        <ul>
+          <li><strong>2.</strong> Células fragmentadas sin núcleo que forman el tapón (9 letras)</li>
+          <li><strong>3.</strong> Enzima que degrada la fibrina al finalizar la reparación (8 letras)</li>
+          <li><strong>5.</strong> Aumento anormal del número de plaquetas (13 letras)</li>
+          <li><strong>7.</strong> Factor que estabiliza la unión plaqueta-colágeno (14 letras, 2 palabras)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESARROLLO 5: RELACIONAR COLUMNAS -->
+  <section id="dev5">
+    <span class="label label-dev">Actividad de Desarrollo 5</span>
+    <h2>Relaciona columnas: Células sanguíneas ↔ Función en la hemostasia</h2>
+    <p>Selecciona un elemento de la columna izquierda y luego su pareja de la columna derecha. ¡Cuidado! Si te equivocas, se marcará en rojo.</p>
+    <div class="match-container" id="match-container"></div>
+    <div class="score-text" id="score-match-text">0 / 5 parejas correctas</div>
+    <button class="btn-secondary" onclick="resetMatch()">Reiniciar</button>
+  </section>
+
+  <!-- DESARROLLO 6: CASO CLÍNICO BREVE -->
+  <section id="dev6">
+    <span class="label label-dev">Actividad de Desarrollo 6</span>
+    <h2>Caso clínico: Alteración cuantitativa de plaquetas</h2>
+    <div class="case-box">
+      <h4>Caso de María (17 años)</h4>
+      <p>María llegó a la clínica escolar con <strong>pequeños puntos rojos en los brazos</strong> (petequias) y sangrado de encías al cepillarse. La semana pasada tuvo una infección respiratoria leve. El hemograma mostró:</p>
+      <ul style="margin:0.5rem 0; padding-left:1.2rem;">
+        <li>Plaquetas: 18,000 /µL (normal: 150,000–450,000)</li>
+        <li>Hemoglobina: normal</li>
+        <li>Leucocitos: normal</li>
+      </ul>
+      <p>El médico sospecha una <strong>trombocitopenia inmunitaria (PTI)</strong> post-infecciosa. No hay anemia ni leucopenia, y el bazo no está agrandado.</p>
+    </div>
+    <div class="quiz-container" id="quiz-dev6"></div>
+    <div class="score-bar"><div id="score-dev6-bar"></div></div>
+    <div class="score-text" id="score-dev6-text">0 / 4 correctas</div>
+    <button class="btn-secondary" onclick="resetQuiz('dev6')">Reiniciar</button>
+    <div style="margin-top:1rem; padding:0.8rem; background:var(--accent-blue-light); border-radius:8px; font-size:0.9rem;">
+      <strong>💡 Dato didáctico:</strong> La PTI post-infecciosa en adolescentes suele ser autolimitada. El tratamiento incluye vigilancia, corticoides si hay sangrado activo, y en casos graves inmunoglobulina IV. <em>Orientación didáctica; el diagnóstico clínico lo determina el médico.</em>
+    </div>
+  </section>
+
+  <!-- SIMULADOR INTERACTIVO -->
+  <section id="sim">
+    <span class="label label-sim">Simulador Interactivo</span>
+    <h2>Panel de células sanguíneas: Explora la hemostasia</h2>
+    <p>Controla el proceso paso a paso. Usa los botones para avanzar la animación. Haz clic sobre cualquier célula o estructura en el canvas para ver su función. ¡Observa cómo se forma el coágulo en tiempo real!</p>
+    <div class="simulator-panel">
+      <div class="canvas-wrap" style="position:relative;">
+        <canvas id="canvas-sim"></canvas>
+        <div id="sim-panel-info" style="position:absolute; top:10px; left:10px; background:rgba(255,255,255,0.95); border:1px solid var(--border); border-radius:8px; padding:0.6rem 0.8rem; max-width:260px; font-size:0.85rem; display:none; box-shadow:var(--shadow); z-index:10;">
+          <h5 id="sim-info-title" style="margin-bottom:0.3rem; color:var(--accent-blue);"></h5>
+          <p id="sim-info-desc" style="margin:0; color:var(--text-dark);"></p>
+        </div>
+      </div>
+      <div class="canvas-controls" style="flex-wrap:wrap; gap:0.4rem;">
+        <button id="btn-sim-0" class="active" onclick="setSimPhase(0)">1. Vaso sano</button>
+        <button id="btn-sim-1" onclick="setSimPhase(1)">2. Lesión</button>
+        <button id="btn-sim-2" onclick="setSimPhase(2)">3. Plaquetas</button>
+        <button id="btn-sim-3" onclick="setSimPhase(3)">4. Tapón</button>
+        <button id="btn-sim-4" onclick="setSimPhase(4)">5. Fibrina</button>
+        <button id="btn-sim-5" onclick="setSimPhase(5)">6. Coágulo</button>
+        <button id="btn-sim-6" onclick="setSimPhase(6)">7. Reparado</button>
+      </div>
+    </div>
+    <div style="margin-top:1rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:0.6rem; font-size:0.85rem;">
+      <div style="padding:0.4rem; background:#fecaca; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('platelet')">🔴 Plaquetas = Tapón</div>
+      <div style="padding:0.4rem; background:#fee2e2; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('rbc')">🔴 Eritrocitos = Oxígeno</div>
+      <div style="padding:0.4rem; background:#dbeafe; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('neutrophil')">🔵 Neutrófilos = NETs</div>
+      <div style="padding:0.4rem; background:#dcfce7; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('monocyte')">🟢 Monocitos = TF</div>
+      <div style="padding:0.4rem; background:#ede9fe; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('megakaryocyte')">🟣 Megacariocitos = Producción</div>
+      <div style="padding:0.4rem; background:#fef3c7; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('fibrin')">🟡 Fibrina = Cemento</div>
+      <div style="padding:0.4rem; background:#f3e8ff; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('vwf')">🟣 vW = Puente</div>
+      <div style="padding:0.4rem; background:#fda4af; border-radius:6px; text-align:center; cursor:pointer;" onclick="showLegend('endothelial')">🩷 Endoteliales = Barrera</div>
+    </div>
+  </section>
+
+  <!-- CIERRE 1: MAPA CONCEPTUAL -->
+  <section id="close1">
+    <span class="label label-close">Actividad de Cierre 1</span>
+    <h2>Mapa conceptual: Ordena la secuencia de la hemostasia</h2>
+    <div class="reading-text" style="margin-bottom:1rem;">
+      <p><strong>🩸 Situación:</strong> Un vaso sanguíneo acaba de romperse. La sangre empieza a salir. El cuerpo tiene que actuar <em>rápido</em> para no perder demasiado líquido y células. Pero el proceso no es al azar: hay un orden lógico, como una cadena de emergencia.</p>
+      <p>Primero, el vaso debe <strong>encogerse</strong> para reducir el flujo. Luego llegan las <strong>plaquetas</strong> como los primeros bomberos. Se pegan al colágeno, se activan, liberan señales químicas para llamar a más refuerzos, y forman un <strong>tapón provisional</strong>. Eso detiene el sangrado unos minutos, pero no es suficiente: el tapón es frágil. Entonces entra en acción la <strong>cascada de coagulación</strong> —una serie de reacciones enzimáticas— que convierte el fibrinógeno soluble en <strong>fibrina insoluble</strong>, creando una red de cemento que atrapa todo y forma el <strong>coágulo definitivo</strong>. Finalmente, cuando el tejido está reparado, la <strong>plasmina</strong> disuelve la red para restablecer la circulación normal.</p>
+      <p><strong>Ahora te toca:</strong> Las tarjetas de abajo muestran los 8 eventos, pero están <em>barajadas</em> como cartas desordenadas. Tu misión es ordenarlos en la secuencia correcta. <strong>Haz clic en la tarjeta que consideres el PASO 1, luego el PASO 2, y así sucesivamente.</strong> Si aciertas, la tarjeta se pone verde con su número de paso. Si te equivocas, se marca rojo brevemente y debes intentar con otra. ¡Piensa lógicamente! ¿Qué pasaría primero si el vaso se rompe?</p>
+    </div>
+    <p style="font-weight:700; color:var(--accent-red); margin-bottom:0.5rem;">⚠️ UNA LESIÓN VASCULAR HA OCURRIDO. TU OBJETIVO ES DETENER LA HEMORRAGIA CORRECTAMENTE. ORDENA LOS EVENTOS BIOLÓGICOS SECUENCIALES PARA FORMAR EL TAPÓN PLAQUETARIO Y ESTABILIZAR LA RED DE FIBRINA.</p>
+    <div class="map-conceptual" id="map-conceptual"></div>
+    <div class="score-text" id="map-score-text" style="margin-top:0.8rem; font-weight:600;">Paso actual: 1 de 8</div>
+    <div class="score-bar" style="margin-top:0.5rem;"><div id="map-score-bar" style="height:100%; background:var(--accent-green); width:0%; transition:width .4s;"></div></div>
+    <button class="btn-secondary" onclick="resetMap()" style="margin-top:0.8rem;">Reiniciar mapa</button>
+  </section>
+
+  <!-- CIERRE 2: SOPA DE LETRAS -->
+  <section id="close2">
+    <span class="label label-close">Actividad de Cierre 2</span>
+    <h2>Sopa de letras: Encuentra los conceptos clave</h2>
+    <p>Encuentra las palabras escondidas en la sopa. <strong>Haz clic en la primera letra</strong> de la palabra y luego <strong>en la última letra</strong>. La palabra puede estar en horizontal (→ o ←), vertical (↓ o ↑) o diagonal. Si aciertas, se marcará en verde.</p>
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-start;">
+      <div>
+        <div id="wordsearch-grid" style="display:grid; gap:2px; user-select:none;"></div>
+        <div style="margin-top:0.8rem; text-align:center;">
+          <button class="btn-primary" onclick="revealWordsearch()">Mostrar solución</button>
+          <button class="btn-secondary" onclick="buildWordsearch()">Nueva sopa</button>
+        </div>
+      </div>
+      <div style="flex:1; min-width:220px;">
+        <h4 style="color:var(--accent-blue); margin-bottom:0.5rem;">Palabras por encontrar:</h4>
+        <ul id="wordsearch-words" style="list-style:none; padding:0; font-size:0.95rem; line-height:2;"></ul>
+        <div class="score-text" id="ws-score-text" style="font-weight:600; margin-top:0.5rem;">0 / 8 encontradas</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CIERRE 3: CUADRO COMPARATIVO PARA LIBRETA -->
+  <section id="close3">
+    <span class="label label-close">Actividad de Cierre 3</span>
+    <h2>Cuadro comparativo: Transcríbelo en tu libreta ✏️</h2>
+    <p>Copia este cuadro en tu libreta y complétalo con lo aprendido. Te servirá como resumen para el examen. Al terminar, usa el botón <strong>"Verificar respuestas"</strong> para comprobar lo que escribiste.</p>
+    <div style="overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; font-size:0.9rem; background:#fff;">
+        <thead>
+          <tr style="background:var(--accent-blue); color:#fff;">
+            <th style="padding:0.6rem; border:1px solid #cbd5e1; text-align:left;">Célula / Elemento</th>
+            <th style="padding:0.6rem; border:1px solid #cbd5e1; text-align:left;">¿Dónde se produce?</th>
+            <th style="padding:0.6rem; border:1px solid #cbd5e1; text-align:left;">¿Tiene núcleo?</th>
+            <th style="padding:0.6rem; border:1px solid #cbd5e1; text-align:left;">Función en la hemostasia</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:0.6rem; border:1px solid #cbd5e1; font-weight:700;">Plaquetas</td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="medula|médula" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="no" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="tapon|tapón" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td></tr>
+          <tr><td style="padding:0.6rem; border:1px solid #cbd5e1; font-weight:700;">Eritrocitos</td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="medula|médula" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="no" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="oxigeno|oxígeno" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td></tr>
+          <tr><td style="padding:0.6rem; border:1px solid #cbd5e1; font-weight:700;">Neutrófilos</td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="medula|médula" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="si|sí" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="fagocito|fagocitan|nets|limpi" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td></tr>
+          <tr><td style="padding:0.6rem; border:1px solid #cbd5e1; font-weight:700;">Monocitos</td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="medula|médula" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="si|sí" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="factor tisular|fagocito" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td></tr>
+          <tr><td style="padding:0.6rem; border:1px solid #cbd5e1; font-weight:700;">Megacariocitos</td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="medula|médula" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="si|sí" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="plaqueta|producen plaquetas" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td></tr>
+          <tr><td style="padding:0.6rem; border:1px solid #cbd5e1; font-weight:700;">Fibrina</td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="fibrinogeno|fibrinógeno|hepatica|hepática|higado|hígado" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="no" placeholder="✏️ (es proteína)" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td><td style="padding:0.6rem; border:1px solid #cbd5e1;"><input type="text" data-answer="red|malla|coagulo|coágulo" placeholder="✏️" style="width:100%; border:none; outline:none; font-size:0.9rem;"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:0.8rem; text-align:center;">
+      <button class="btn-primary" onclick="checkComparisonTable()">Verificar respuestas</button>
+      <button class="btn-secondary" onclick="clearComparisonTable()">Limpiar</button>
+    </div>
+    <div class="score-text" id="table-score-text" style="text-align:center; font-weight:600;"></div>
+  </section>
+
+  <!-- GLOSARIO -->
+  <section id="glosario">
+    <h2>Glosario rápido</h2>
+    <div class="card-grid">
+      <div class="card"><h4>Plaquetas (trombocitos)</h4><p>Fragmentos citoplasmáticos sin núcleo producidos en la médula ósea que forman tapones para detener sangrados.</p></div>
+      <div class="card"><h4>Hemostasia</h4><p>Proceso fisiológico que detiene el sangrado de un vaso dañado mediante vasoconstricción, tapón plaquetario y coagulación.</p></div>
+      <div class="card"><h4>Fibrina</h4><p>Proteína insoluble formada a partir del fibrinógeno por acción de la trombina. Crea una red que estabiliza el coágulo.</p></div>
+      <div class="card"><h4>Trombocitopenia</h4><p>Disminución del número de plaquetas en sangre por debajo de 150,000/µL. Aumenta el riesgo de hemorragia.</p></div>
+      <div class="card"><h4>Trombocitosis</h4><p>Aumento anormal del número de plaquetas, que puede favorecer la formación de trombos (coágulos anormales).</p></div>
+      <div class="card"><h4>Factor von Willebrand</h4><p>Glicoproteína que actúa como puente entre las plaquetas y el colágeno del vaso dañado, además de transportar el factor VIII.</p></div>
+      <div class="card"><h4>Fibrinólisis</h4><p>Proceso de degradación de la fibrina por la plasmina para disolver el coágulo una vez curada la herida.</p></div>
+      <div class="card"><h4>Serie blanca</h4><p>Conjunto de células sanguíneas formadas por leucocitos (neutrófilos, linfocitos, monocitos, eosinófilos, basófilos).</p></div>
+    </div>
+  </section>
+
+  <!-- FUENTES -->
+  <section>
+    <h2>Fuentes verificadas</h2>
+    <ul class="resource-list">
+      <li>Manual MSD versión para público general — <a href="https://www.msdmanuals.com/es/hogar/trastornos-de-la-sangre/trastornos-de-las-plaquetas/introducci%C3%B3n-a-la-trombocitopenia" target="_blank">Introducción a la trombocitopenia</a></li>
+      <li>Manual MSD versión profesionales — <a href="https://www.msdmanuals.com/es/professional/hematolog%C3%ADa-y-oncolog%C3%ADa/trombocitopenia-y-disfunci%C3%B3n-plaquetaria/trombocitopenia-otras-causas" target="_blank">Trombocitopenia: otras causas</a></li>
+      <li>Osmosis — <a href="https://www.osmosis.org/learn/es/Coagulation_(secondary_hemostasis)" target="_blank">Coagulación (hemostasia secundaria)</a></li>
+      <li>Mayo Clinic — <a href="https://www.mayoclinic.org/es/diseases-conditions/thrombocytopenia/symptoms-causes/syc-20378293" target="_blank">Trombocitopenia (recuento bajo de plaquetas)</a></li>
+      <li>Wikibiología — <a href="https://www.wikibiologia.net/fisiologia-de-la-hemostasia-plaquetas-y-coagulacion-sanguinea/" target="_blank">Fisiología de la Hemostasia: Plaquetas y Coagulación Sanguínea</a></li>
+      <li>LibreTexts Español — <a href="https://espanol.libretexts.org/Salud/Anatom%C3%ADa_y_Fisiolog%C3%ADa/Libro%3A_Anatom%C3%ADa_y_Fisiolog%C3%ADa_(Sin_l%C3%ADmites)/16%3A_Sistema_Cardiovascular_-_Sangre/16.5%3A_Hemostasia/16.5D%3A_Coagulaci%C3%B3n" target="_blank">Coagulación (Anatomía y Fisiología)</a></li>
+      <li>Estudyando — <a href="https://estudyando.com/hemostasia-proceso-de-coagulacion-formacion-de-plaquetas-y-condiciones-de-coagulacion/" target="_blank">Hemostasia: proceso de coagulación</a></li>
+      <li>El Rincón de la Medicina Interna — <a href="https://www.elrincondelamedicinainterna.com/2022/10/alteraciones-de-las-plaquetas-y-de-la.html" target="_blank">Alteraciones de las plaquetas y la coagulación</a></li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>
+  <p>LAB. VIRTUAL ÁLVAREZ 2026 — CETIS 43, Xochitepec, Morelos — CNEyT III DGETI</p>
+  <p style="font-size:0.75rem; margin-top:0.3rem;">Página autocontenida. Funciona sin conexión a internet. No requiere bibliotecas externas.</p>
+</footer>
+
+<script>
+/* ============================
+   UTILIDADES
+   ============================ */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function setHTML(id, html) { document.getElementById(id).innerHTML = html; }
+
+/* ============================
+   DATOS DE QUIZ
+   ============================ */
+const quizzes = {
+  diag: {
+    scoreId: 'score-diag', barId: 'score-diag-bar',
+    questions: [
+      { q: "¿Qué son las plaquetas?", a: 2,
+        options: ["Células con núcleo que transportan oxígeno","Fragmentos celulares sin núcleo que ayudan a coagular","Hormonas del hígado","Proteínas del plasma"] },
+      { q: "¿Cuál es la función principal de la hemostasia?", a: 1,
+        options: ["Transportar nutrientes","Detener el sangrado de un vaso lesionado","Producir anticuerpos","Regular la temperatura corporal"] },
+      { q: "¿Qué proteína forma la red que refuerza el tapón plaquetario?", a: 3,
+        options: ["Insulina","Albumina","Fibrina","Hemoglobina"] },
+      { q: "La trombocitopenia significa:", a: 0,
+        options: ["Disminución de plaquetas en sangre","Aumento de plaquetas","Coagulación excesiva","Destrucción de fibrina"] },
+      { q: "¿Cuántas plaquetas normales hay aproximadamente por microlitro de sangre?", a: 2,
+        options: ["10,000 – 50,000","50,000 – 100,000","150,000 – 450,000","1,000,000 – 2,000,000"] }
+    ]
+  },
+  dev1: {
+    scoreId: 'score-dev1', barId: 'score-dev1-bar',
+    questions: [
+      { q: "¿Qué expone el subendotelio cuando un vaso se lesiona?", a: 1,
+        options: ["Insulina","Colágeno","Glucosa","Oxígeno"] },
+      { q: "¿Qué molécula actúa como 'puente' entre la plaqueta y el colágeno?", a: 3,
+        options: ["Insulina","Hemoglobina","Glóbulos blancos","Factor von Willebrand"] },
+      { q: "La trombina convierte el fibrinógeno en:", a: 0,
+        options: ["Fibrina","Colágeno","Elastina","Albumina"] },
+      { q: "¿Qué enzima degrada la fibrina cuando el tejido está reparado?", a: 2,
+        options: ["Trombina","Pepsina","Plasmina","Lipasa"] }
+    ]
+  },
+  dev2: {
+    scoreId: 'score-dev2', barId: 'score-dev2-bar',
+    questions: [
+      { q: "La hemostasia primaria se refiere a:", a: 0,
+        options: ["Formación del tapón plaquetario","Cascada de coagulación","Degradación del coágulo","Vasoconstricción"] },
+      { q: "La vía extrínseca de la coagulación se inicia por:", a: 1,
+        options: ["Contacto con colágeno","Factor tisular liberado por células dañadas","Activación del factor XII","Liberación de serotonina"] },
+      { q: "¿Qué liberan las plaquetas activadas para reclutar más plaquetas?", a: 2,
+        options: ["Insulina y glucagón","Eritropoyetina","ADP y tromboxano A2","Hormona del crecimiento"] },
+      { q: "El factor XIII estabiliza la red de fibrina mediante:", a: 3,
+        options: ["Calor","Presión","Electricidad","Enlaces cruzados (puentes covalentes)"] },
+      { q: "Si una persona tiene plaquetas > 450,000/µL, se le denomina:", a: 0,
+        options: ["Trombocitosis","Trombocitopenia","Hemofilia","Leucemia"] }
+    ]
+  },
+  dev3: {
+    scoreId: 'score-dev3', barId: 'score-dev3-bar',
+    questions: [
+      { q: "En la animación, ¿qué células viajan hacia el coágulo para eliminar sus restos?", a: 1,
+        options: ["Eritrocitos","Neutrófilos y monocitos","Plaquetas","Megacariocitos"] },
+      { q: "¿Cómo eliminan estas células los restos del coágulo?", a: 0,
+        options: ["Por fagocitosis (se los 'comen')","Produciendo fibrina","Liberando oxígeno","Dividiéndose"] },
+      { q: "Además de limpiar, los monocitos activados expresan en su membrana:", a: 3,
+        options: ["Hemoglobina","Insulina","Colágeno","Factor tisular (inicia la vía extrínseca)"] },
+      { q: "Cuando el coágulo desaparece, estas células defensoras:", a: 2,
+        options: ["Mueren inmediatamente","Se convierten en plaquetas","Vuelven a patrullar la sangre","Forman un nuevo coágulo"] }
+    ]
+  },
+  dev6: {
+    scoreId: 'score-dev6', barId: 'score-dev6-bar',
+    questions: [
+      { q: "Según el caso, ¿cuál es la principal alteración de María?", a: 1,
+        options: ["Anemia","Trombocitopenia severa","Leucopenia","Hipertensión"] },
+      { q: "¿Qué signo físico presenta María característico de plaquetas bajas?", a: 2,
+        options: ["Fiebre alta","Dolor de cabeza","Petéquias (puntos rojos)","Tos seca"] },
+      { q: "La trombocitopenia inmunitaria (PTI) en adolescentes suele ser:", a: 0,
+        options: ["Autolimitada (se resuelve sola)","Crónica e incurable","Causada por bacterias","Transmitida por el aire"] },
+      { q: "¿Qué medicamento se usa frecuentemente para frenar la destrucción de plaquetas en la PTI?", a: 3,
+        options: ["Antibióticos","Vacunas","Analgésicos","Corticoides (p. ej. prednisona)"] }
+    ]
+  }
+};
+
+function buildQuiz(key) {
+  const data = quizzes[key];
+  const container = document.getElementById('quiz-'+key);
+  let html = '';
+  data.questions.forEach((q, i) => {
+    html += `<div class="question" id="q-${key}-${i}"><p>${i+1}. ${q.q}</p><div class="options">`;
+    const opts = q.options.map((opt, j) => ({opt, j}));
+    shuffle(opts);
+    opts.forEach(({opt, j}) => {
+      html += `<button onclick="checkAnswer('${key}', ${i}, ${j}, this)">${opt}</button>`;
+    });
+    html += `</div><div class="feedback" id="fb-${key}-${i}" style="margin-top:0.4rem; font-size:0.9rem; display:none;"></div></div>`;
+  });
+  container.innerHTML = html;
+}
+
+const quizState = {};
+function checkAnswer(key, qi, ai, btn) {
+  const data = quizzes[key];
+  if (!quizState[key]) quizState[key] = {};
+  if (quizState[key][qi] !== undefined) return;
+  const q = data.questions[qi];
+  const correct = (ai === q.a);
+  quizState[key][qi] = correct;
+  btn.classList.add(correct ? 'correct' : 'wrong');
+  const fb = document.getElementById(`fb-${key}-${qi}`);
+  fb.style.display = 'block';
+  fb.innerHTML = correct ? `<span style="color:var(--accent-green); font-weight:700;">✅ ¡Correcto!</span>` : `<span style="color:var(--accent-red); font-weight:700;">❌ Incorrecto.</span> La respuesta correcta era: <strong>${q.options[q.a]}</strong>`;
+  updateScore(key);
+}
+
+function updateScore(key) {
+  const data = quizzes[key];
+  const state = quizState[key] || {};
+  let correct = 0;
+  data.questions.forEach((_, i) => { if (state[i]) correct++; });
+  const pct = (correct / data.questions.length) * 100;
+  document.getElementById(data.scoreId + '-text').textContent = `${correct} / ${data.questions.length} correctas`;
+  document.getElementById(data.barId).style.width = pct + '%';
+}
+
+function resetQuiz(key) {
+  delete quizState[key];
+  buildQuiz(key);
+  const data = quizzes[key];
+  document.getElementById(data.scoreId + '-text').textContent = `0 / ${data.questions.length} correctas`;
+  document.getElementById(data.barId).style.width = '0%';
+}
+
+/* Inicializar quizzes */
+Object.keys(quizzes).forEach(buildQuiz);
+
+/* ============================
+   CANVAS HEMOSTASIA (4 FASES)
+   ============================ */
+const c1 = document.getElementById('canvas-hemostasia');
+const ctx1 = c1.getContext('2d');
+let phase = 0;
+let particles = [];
+let dissolveT = 0; // progreso de fibrinólisis (0 a 1)
+function resizeC1() {
+  const rect = c1.parentElement.getBoundingClientRect();
+  c1.width = rect.width; c1.height = 240;
+}
+window.addEventListener('resize', resizeC1);
+resizeC1();
+
+function initParticles() {
+  particles = [];
+  for (let i = 0; i < 40; i++) {
+    particles.push({ x: 25+Math.random()*(c1.width-50), y: 60+Math.random()*(c1.height-90), r: 2+Math.random()*3, vx: (Math.random()-0.5)*0.6, vy: (Math.random()-0.5)*0.6, type: 'rb' });
+  }
+}
+initParticles();
+
+function drawHemostasis() {
+  ctx1.clearRect(0,0,c1.width,c1.height);
+  const w = c1.width, h = c1.height;
+  const hX = w/2;          // centro de la herida
+  const wTop = 40;         // borde superior del vaso
+  const wallT = 12;        // grosor de la pared
+  const bloodTop = wTop + wallT;   // 52
+  const bloodBot = h - 20;         // borde inferior de la sangre
+  const woundHW = 50;      // media anchura de la herida
+
+  // 1. Tejido exterior (arriba del vaso)
+  ctx1.fillStyle = '#fff1f2'; ctx1.fillRect(0, 0, w, wTop);
+  ctx1.fillStyle = '#fda4af'; ctx1.font = '10px sans-serif';
+  ctx1.fillText('TEJIDO', 6, 14);
+
+  // 2. Sangre dentro del vaso
+  ctx1.fillStyle = '#fecaca'; ctx1.fillRect(20, bloodTop, w-40, bloodBot-bloodTop);
+
+  // 3. Pared del vaso (superior con abertura = herida; inferior completa)
+  ctx1.fillStyle = '#b91c1c';
+  ctx1.fillRect(20, wTop, hX-woundHW-20, wallT);   // tramo izquierdo
+  ctx1.fillRect(hX+woundHW, wTop, w-20-(hX+woundHW), wallT); // tramo derecho
+  ctx1.fillRect(20, bloodBot, w-40, wallT);        // pared inferior
+
+  // 4. Herida (abertura granate con borde dentado)
+  ctx1.fillStyle = '#881337';
+  ctx1.beginPath();
+  ctx1.moveTo(hX-woundHW, wTop);
+  ctx1.lineTo(hX-woundHW+8, wTop+wallT+3);
+  ctx1.lineTo(hX-woundHW+16, wTop-2);
+  ctx1.lineTo(hX, wTop+wallT+6);
+  ctx1.lineTo(hX+woundHW-16, wTop-2);
+  ctx1.lineTo(hX+woundHW-8, wTop+wallT+3);
+  ctx1.lineTo(hX+woundHW, wTop);
+  ctx1.closePath(); ctx1.fill();
+  ctx1.fillStyle = '#fff'; ctx1.font = 'bold 9px sans-serif'; ctx1.textAlign = 'center';
+  ctx1.fillText('HERIDA', hX, wTop-4);
+  ctx1.textAlign = 'left';
+
+  // 5. Fase 0: sangre escapando por la herida (chorro hacia arriba + gotas)
+  if (phase === 0) {
+    particles.forEach(p => {
+      if (Math.abs(p.x - hX) < woundHW && p.y < bloodTop + 25) {
+        p.y -= 0.9; p.x += (hX - p.x) * 0.01; // succión hacia la salida
+      }
+    });
+    ctx1.fillStyle = '#dc2626';
+    for (let i = 0; i < 5; i++) {
+      const gy = ((Date.now()/14 + i*26) % 90);
+      ctx1.beginPath(); ctx1.arc(hX - 24 + i*12, wTop - 6 - (gy < 34 ? gy : 34), 2.5, 0, Math.PI*2); ctx1.fill();
+    }
+  }
+
+  // 6. Fase >=1: colágeno expuesto colgando DE la herida
+  if (phase >= 1) {
+    ctx1.strokeStyle = '#fdba74'; ctx1.lineWidth = 3;
+    for (let i = 0; i < 5; i++) {
+      const cx = hX - 36 + i*18;
+      ctx1.beginPath();
+      ctx1.moveTo(cx, wTop+wallT-1);
+      ctx1.quadraticCurveTo(cx + Math.sin(i*2)*6, wTop+wallT+16, cx + Math.cos(i)*5, wTop+wallT+30);
+      ctx1.stroke();
+    }
+    ctx1.fillStyle = '#9a3412'; ctx1.font = '10px sans-serif';
+    ctx1.fillText('Colágeno expuesto', hX - 44, wTop+wallT+44);
+  }
+
+  // 7. Fase >=1: tapón plaquetario EN la abertura de la herida
+  if (phase >= 1) {
+    const plugY = wTop + 4;
+    const plug = [ [hX-26, plugY+2], [hX+8, plugY+4], [hX-8, plugY+9], [hX+24, plugY+1], [hX, plugY+13], [hX-18, plugY+11], [hX+16, plugY+12] ];
+    plug.forEach(([x,y]) => {
+      ctx1.beginPath(); ctx1.arc(x, y, 7, 0, Math.PI*2); ctx1.fillStyle = '#ef4444'; ctx1.fill();
+      ctx1.strokeStyle = '#991b1b'; ctx1.lineWidth = 1; ctx1.stroke();
+      ctx1.beginPath(); ctx1.arc(x, y, 2.5, 0, Math.PI*2); ctx1.fillStyle = '#fca5a5'; ctx1.fill();
+    });
+    ctx1.fillStyle = '#7f1d1d'; ctx1.font = 'bold 10px sans-serif'; ctx1.textAlign = 'center';
+    ctx1.fillText('TAPÓN PLAQUETARIO', hX, bloodTop + 34);
+    ctx1.textAlign = 'left';
+  }
+
+  // 8. Fase >=2: red de fibrina sobre el tapón
+  if (phase >= 2) {
+    ctx1.strokeStyle = '#f59e0b'; ctx1.lineWidth = 2;
+    for (let i = 0; i < 6; i++) {
+      ctx1.beginPath();
+      ctx1.moveTo(hX-44 + i*16, wTop-1 + Math.sin(i)*4);
+      ctx1.lineTo(hX-34 + i*16, wTop+wallT+16 + Math.cos(i)*5);
+      ctx1.lineTo(hX-24 + i*16, wTop-1 + Math.sin(i+2)*4);
+      ctx1.stroke();
+    }
+    ctx1.fillStyle = '#92400e'; ctx1.font = '10px sans-serif'; ctx1.textAlign = 'center';
+    ctx1.fillText('Red de fibrina', hX, wTop+wallT+56);
+    ctx1.textAlign = 'left';
+  }
+
+  // 9. Fase 3: plasmina disolviendo el coágulo (se encoge poco a poco)
+  if (phase === 3) {
+    dissolveT = Math.min(1, dissolveT + 0.004);
+    const shrink = 1 - dissolveT*0.75;
+    ctx1.fillStyle = 'rgba(59,130,246,0.25)';
+    ctx1.beginPath(); ctx1.ellipse(hX, wTop+wallT+8, 58*shrink+10, 26, 0, 0, Math.PI*2); ctx1.fill();
+    ctx1.fillStyle = '#1d4ed8'; ctx1.font = '10px sans-serif'; ctx1.textAlign = 'center';
+    ctx1.fillText('Plasmina degradando la fibrina', hX, wTop+wallT+74);
+    ctx1.textAlign = 'left';
+    // puntos de plasmina
+    ctx1.fillStyle = '#3b82f6';
+    for (let i = 0; i < 8; i++) {
+      const a = Date.now()/600 + i;
+      ctx1.beginPath(); ctx1.arc(hX + Math.cos(a)*40*shrink, wTop+wallT+8 + Math.sin(a*1.3)*16, 2, 0, Math.PI*2); ctx1.fill();
+    }
+  } else {
+    dissolveT = 0;
+  }
+
+  // 10. Partículas de sangre (flujo lento)
+  ctx1.fillStyle = '#dc2626';
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    // desvío suave del tapón: las células rodean la zona de la herida
+    if (phase >= 1 && Math.abs(p.x - hX) < 34 && p.y < bloodTop + 40) { p.vx += (p.x < hX ? -0.03 : 0.03); }
+    if (p.x < 25 || p.x > w-25) p.vx *= -1;
+    if (p.y < bloodTop+4 || p.y > bloodBot-4) p.vy *= -1;
+    ctx1.beginPath(); ctx1.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx1.fill();
+  });
+  requestAnimationFrame(drawHemostasis);
+}
+drawHemostasis();
+function setPhase(p) {
+  phase = p;
+  dissolveT = 0;
+  document.querySelectorAll('.canvas-controls button').forEach((b,i) => b.classList.toggle('active', i===p));
+}
+
+/* ============================
+   CANVAS CÉLULAS SANGUÍNEAS (ANIMACIÓN DEV3) — FAGOCITOSIS DEL COÁGULO
+   ============================ */
+const c2 = document.getElementById('canvas-cells');
+const ctx2 = c2.getContext('2d');
+let cellsAnim = true;
+let cells = [];
+let clot = null;      // restos del coágulo
+let dev3Message = '';
+function resizeC2() {
+  const rect = c2.parentElement.getBoundingClientRect();
+  c2.width = rect.width; c2.height = 240;
+}
+window.addEventListener('resize', resizeC2);
+resizeC2();
+
+function initCells() {
+  cells = [];
+  // Coágulo con restos (el objetivo de la limpieza)
+  clot = { x: c2.width*0.75, y: 120, r: 34, originalR: 34 };
+  // Plaquetas en el tapón
+  for (let i = 0; i < 6; i++) {
+    const a = (i/6)*Math.PI*2;
+    cells.push({ x: clot.x + Math.cos(a)*clot.r*0.6, y: clot.y + Math.sin(a)*clot.r*0.6, vx: 0, vy: 0, type: 'platelet' });
+  }
+  // Eritrocitos atrapados en la red
+  for (let i = 0; i < 4; i++) cells.push({ x: clot.x + (Math.random()-0.5)*clot.r, y: clot.y + (Math.random()-0.5)*clot.r, vx: 0, vy: 0, type: 'rbc' });
+  // NEUTRÓFILOS: navegan hacia el coágulo para fagocitar (llegan desde la izquierda)
+  for (let i = 0; i < 3; i++) cells.push({ x: 30+i*30, y: 60+i*50, vx: 0.35+Math.random()*0.25, vy: 0, type: 'neutrophil', state: 'going', phase: Math.random()*Math.PI*2 });
+  // MONOCITOS: también fagocitan restos y expresan TF
+  for (let i = 0; i < 2; i++) cells.push({ x: 20+i*45, y: 150+i*40, vx: 0.25+Math.random()*0.2, vy: 0, type: 'monocyte', state: 'going', phase: Math.random()*Math.PI*2 });
+  dev3Message = '🔵 Neutrófilos y 🟢 monocitos avanzan hacia el coágulo...';
+}
+initCells();
+
+function drawCells() {
+  if (!cellsAnim) { requestAnimationFrame(drawCells); return; }
+  ctx2.clearRect(0,0,c2.width,c2.height);
+  // Fondo vaso
+  ctx2.fillStyle = '#fecaca'; ctx2.fillRect(10, 30, c2.width-20, 180);
+  ctx2.strokeStyle = '#dc2626'; ctx2.lineWidth = 2; ctx2.strokeRect(10,30,c2.width-20,180);
+
+  // === DIBUJAR COÁGULO (restos a eliminar) ===
+  if (clot && clot.r > 4) {
+    // Masa del coágulo: red de fibrina + plaquetas + eritrocitos
+    ctx2.beginPath(); ctx2.arc(clot.x, clot.y, clot.r, 0, Math.PI*2);
+    ctx2.fillStyle = 'rgba(220,38,38,0.35)'; ctx2.fill();
+    ctx2.strokeStyle = '#991b1b'; ctx2.lineWidth = 2; ctx2.stroke();
+    // Hilos de fibrina
+    ctx2.strokeStyle = '#f59e0b'; ctx2.lineWidth = 1.5;
+    for (let i = 0; i < 4; i++) {
+      ctx2.beginPath();
+      ctx2.moveTo(clot.x - clot.r + i*clot.r*0.6, clot.y - clot.r*0.6 + Math.sin(i)*8);
+      ctx2.lineTo(clot.x - clot.r*0.3 + i*clot.r*0.6, clot.y + clot.r*0.5);
+      ctx2.stroke();
+    }
+    ctx2.fillStyle = '#7f1d1d'; ctx2.font = 'bold 11px sans-serif';
+    ctx2.fillText('RESTOS DEL COÁGULO', clot.x - 55, clot.y - clot.r - 8);
+  } else if (clot) {
+    ctx2.fillStyle = '#16a34a'; ctx2.font = 'bold 13px sans-serif';
+    ctx2.fillText('✅ ¡COÁGULO ELIMINADO! Vaso limpio y reparado.', c2.width*0.3, 120);
+  }
+
+  // === DIBUJAR CÉLULAS ===
+  cells.forEach(c => {
+    // Movimiento de fagocitos hacia el coágulo
+    if ((c.type === 'neutrophil' || c.type === 'monocyte') && clot) {
+      if (c.state === 'going' && clot.r > 4) {
+        const dx = clot.x - c.x, dy = clot.y - c.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist > clot.r + 14) {
+          c.x += (dx/dist) * c.vx * 2.2;
+          c.y += (dy/dist) * c.vx * 2.2 + Math.sin(Date.now()*0.003 + c.phase) * 0.4;
+        } else {
+          c.state = 'eating';
+          dev3Message = '🔵🟢 ¡Fagocitando restos! El coágulo se hace más pequeño...';
+        }
+      } else if (c.state === 'eating' && clot && clot.r > 4) {
+        // "Comer" el coágulo: se reduce lentamente
+        clot.r -= 0.035;
+        c.phase += 0.05;
+        c.x = clot.x + Math.cos(c.phase) * (clot.r + 8);
+        c.y = clot.y + Math.sin(c.phase) * (clot.r + 8);
+      } else if (c.state === 'eating' && clot && clot.r <= 4) {
+        // Regresan a patrullar
+        c.state = 'done';
+        c.vx = 0.4 + Math.random()*0.3;
+        dev3Message = '✅ ¡Limpieza completa! Las células vuelven a patrullar la sangre.';
+      } else if (c.state === 'done') {
+        c.x += c.vx; c.y += Math.sin(Date.now()*0.004 + c.phase) * 0.5;
+        if (c.x > c2.width - 30) c.x = 20;
+      }
+    }
+
+    // Dibujo según tipo
+    ctx2.beginPath();
+    if (c.type === 'platelet') {
+      ctx2.arc(c.x, c.y, 10, 0, Math.PI*2); ctx2.fillStyle = '#ef4444'; ctx2.fill(); ctx2.stroke();
+      ctx2.beginPath(); ctx2.arc(c.x, c.y, 4, 0, Math.PI*2); ctx2.fillStyle = '#fca5a5'; ctx2.fill();
+    } else if (c.type === 'rbc') {
+      ctx2.ellipse(c.x, c.y, 18, 12, 0, 0, Math.PI*2); ctx2.fillStyle = '#dc2626'; ctx2.fill(); ctx2.stroke();
+    } else if (c.type === 'neutrophil') {
+      ctx2.arc(c.x, c.y, 13, 0, Math.PI*2); ctx2.fillStyle = '#3b82f6'; ctx2.fill(); ctx2.stroke();
+      // Gránulos + núcleo multilobulado
+      ctx2.beginPath(); ctx2.arc(c.x-4, c.y-3, 3, 0, Math.PI*2); ctx2.fillStyle = '#dbeafe'; ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(c.x+4, c.y-2, 3, 0, Math.PI*2); ctx2.fillStyle = '#dbeafe'; ctx2.fill();
+      ctx2.beginPath(); ctx2.arc(c.x, c.y+4, 3, 0, Math.PI*2); ctx2.fillStyle = '#dbeafe'; ctx2.fill();
+      ctx2.fillStyle = '#1e3a8a'; ctx2.font = 'bold 10px sans-serif'; ctx2.fillText('Neu', c.x-9, c.y - 17);
+    } else if (c.type === 'monocyte') {
+      ctx2.arc(c.x, c.y, 15, 0, Math.PI*2); ctx2.fillStyle = '#22c55e'; ctx2.fill(); ctx2.stroke();
+      ctx2.beginPath(); ctx2.arc(c.x, c.y, 7, 0, Math.PI*2); ctx2.fillStyle = '#86efac'; ctx2.fill();
+      ctx2.fillStyle = '#14532d'; ctx2.font = 'bold 10px sans-serif'; ctx2.fillText('Mon', c.x-9, c.y - 19);
+    }
+  });
+
+  // Mensaje de estado
+  ctx2.fillStyle = '#1e293b'; ctx2.font = 'bold 12px sans-serif';
+  ctx2.fillText(dev3Message, 20, 20);
+
+  // Leyenda inferior
+  ctx2.fillStyle = '#7f1d1d'; ctx2.font = '10px sans-serif';
+  ctx2.fillText('Neutrófilo (azul, 3 lóbulos) = fagocita restos y libera NETs  |  Monocito (verde) = fagocita y produce factor tisular', 15, 226);
+
+  requestAnimationFrame(drawCells);
+}
+drawCells();
+function toggleCellsAnim() { cellsAnim = !cellsAnim; document.getElementById('btn-cells').textContent = cellsAnim ? '⏸ Pausar' : '▶ Reproducir'; }
+function resetCellsAnim() { initCells(); }
+
+/* ============================
+   CRUCIGRAMA
+   ============================ */
+const crosswordWords = [
+  { word: 'FIBRINA', row: 0, col: 3, dir: 'across', clue: 1 },
+  { word: 'PLAQUETAS', row: 2, col: 1, dir: 'across', clue: 2 },
+  { word: 'PLASMINA', row: 4, col: 0, dir: 'across', clue: 3 },
+  { word: 'TROMBOCITOSIS', row: 6, col: 0, dir: 'across', clue: 5 },
+  { word: 'ERITROCITOS', row: 8, col: 2, dir: 'across', clue: 6 },
+  { word: 'VENA', row: 10, col: 4, dir: 'across', clue: 8 },
+];
+const crosswordRows = 12, crosswordCols = 12;
+function buildCrossword() {
+  const grid = document.getElementById('crossword-grid');
+  grid.style.gridTemplateColumns = `repeat(${crosswordCols}, 1fr)`;
+  let html = '';
+  for (let r = 0; r < crosswordRows; r++) {
+    for (let c = 0; c < crosswordCols; c++) {
+      const hasWord = crosswordWords.some(w => {
+        if (w.dir === 'across') return r === w.row && c >= w.col && c < w.col + w.word.length;
+        return false;
+      });
+      if (hasWord) {
+        html += `<input type="text" maxlength="1" data-r="${r}" data-c="${c}" class="cw-cell" />`;
+      } else {
+        html += `<input type="text" disabled class="block" />`;
+      }
+    }
+  }
+  grid.innerHTML = html;
+  // Poner números
+  crosswordWords.forEach(w => {
+    const idx = w.row * crosswordCols + w.col;
+    const inp = grid.children[idx];
+    if (inp && !inp.disabled) {
+      const num = document.createElement('span');
+      num.textContent = w.clue;
+      num.style = 'position:absolute; font-size:10px; color:#334155; font-weight:700; top:2px; left:2px; z-index:2;';
+      inp.style.position = 'relative';
+      inp.parentElement.style.position = 'relative';
+      grid.children[idx].parentElement.appendChild(num); // simplificado: usamos data attr
+      // Simplificación: usamos before pseudo en CSS con data attr no es fácil inline, así que dejamos sin número visual para evitar complejidad excesiva de layout, o lo agregamos manualmente con overlay
+      // Para mantenerlo robusto, usaremos una solución más simple: mostrar solo celdas
+    }
+  });
+  // Agregar números usando posición absoluta de manera más segura
+  const cells = Array.from(grid.querySelectorAll('input:not(.block)'));
+  crosswordWords.forEach(w => {
+    const idx = w.row * crosswordCols + w.col;
+    const inp = grid.children[idx];
+    if (inp) {
+      inp.setAttribute('data-clue', w.clue);
+      const overlay = document.createElement('span');
+      overlay.textContent = w.clue;
+      overlay.style.cssText = 'position:absolute; top:1px; left:2px; font-size:9px; font-weight:700; color:#475569; pointer-events:none;';
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'position:relative;';
+      inp.parentNode.insertBefore(wrapper, inp);
+      wrapper.appendChild(inp);
+      wrapper.appendChild(overlay);
+    }
+  });
+}
+buildCrossword();
+
+function checkCrossword() {
+  const cells = document.querySelectorAll('#crossword-grid input.cw-cell');
+  let ok = true;
+  cells.forEach(inp => {
+    const r = +inp.getAttribute('data-r');
+    const c = +inp.getAttribute('data-c');
+    const val = inp.value.trim().toUpperCase();
+    let expected = '';
+    crosswordWords.forEach(w => {
+      if (w.dir === 'across' && r === w.row && c >= w.col && c < w.col + w.word.length) {
+        expected = w.word[c - w.col];
+      }
+    });
+    if (expected) {
+      if (val === expected) { inp.classList.add('ok'); inp.classList.remove('err'); }
+      else { inp.classList.add('err'); inp.classList.remove('ok'); ok = false; }
+    }
+  });
+  if (ok) alert('¡Excelente! Todas las palabras son correctas. 🎉');
+  else alert('Hay algunas letras incorrectas. Sigue intentando. 💪');
+}
+function solveCrossword() {
+  document.querySelectorAll('#crossword-grid input.cw-cell').forEach(inp => {
+    const r = +inp.getAttribute('data-r');
+    const c = +inp.getAttribute('data-c');
+    crosswordWords.forEach(w => {
+      if (w.dir === 'across' && r === w.row && c >= w.col && c < w.col + w.word.length) {
+        inp.value = w.word[c - w.col];
+        inp.classList.add('ok'); inp.classList.remove('err');
+      }
+    });
+  });
+}
+function clearCrossword() {
+  document.querySelectorAll('#crossword-grid input.cw-cell').forEach(inp => { inp.value = ''; inp.classList.remove('ok', 'err'); });
+}
+
+/* ============================
+   RELACIONAR COLUMNAS
+   ============================ */
+const matchData = [
+  { left: 'Plaquetas', right: 'Forman el tapón hemostático provisional', id: 'plaquetas' },
+  { left: 'Eritrocitos', right: 'Transportan oxígeno y quedan atrapados en la red de fibrina', id: 'eritrocitos' },
+  { left: 'Leucocitos (neutrófilos)', right: 'Fagocitan restos del coágulo y combaten infecciones', id: 'neutrofilos' },
+  { left: 'Fibrina', right: 'Proteína que forma la red estable del coágulo', id: 'fibrina' },
+  { left: 'Megacariocitos', right: 'Células de la médula ósea que producen plaquetas', id: 'megacariocitos' }
+];
+let selectedLeft = null, selectedRight = null;
+let matchPairs = {};
+function buildMatch() {
+  const container = document.getElementById('match-container');
+  const leftItems = shuffle(matchData.map(m => m.left));
+  const rightItems = shuffle(matchData.map(m => m.right));
+  let html = '<div class="match-column"><h4 style="margin-bottom:0.5rem; color:var(--accent-blue);">Columna A</h4>';
+  leftItems.forEach(txt => {
+    const id = matchData.find(m => m.left === txt).id;
+    html += `<div class="match-item" data-side="left" data-id="${id}" onclick="selectMatch(this)">${txt}</div>`;
+  });
+  html += '</div><div class="match-column"><h4 style="margin-bottom:0.5rem; color:var(--accent-blue);">Columna B</h4>';
+  rightItems.forEach(txt => {
+    const id = matchData.find(m => m.right === txt).id;
+    html += `<div class="match-item" data-side="right" data-id="${id}" onclick="selectMatch(this)">${txt}</div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+function selectMatch(el) {
+  if (el.classList.contains('matched')) return;
+  const side = el.getAttribute('data-side');
+  const id = el.getAttribute('data-id');
+  if (side === 'left') {
+    if (selectedLeft) selectedLeft.classList.remove('selected');
+    selectedLeft = el; el.classList.add('selected');
+  } else {
+    if (selectedRight) selectedRight.classList.remove('selected');
+    selectedRight = el; el.classList.add('selected');
+  }
+  if (selectedLeft && selectedRight) {
+    if (selectedLeft.getAttribute('data-id') === selectedRight.getAttribute('data-id')) {
+      selectedLeft.classList.add('matched'); selectedLeft.classList.remove('selected');
+      selectedRight.classList.add('matched'); selectedRight.classList.remove('selected');
+      matchPairs[id] = true;
+      updateMatchScore();
+    } else {
+      selectedLeft.classList.add('wrong-match'); selectedRight.classList.add('wrong-match');
+      setTimeout(() => {
+        selectedLeft.classList.remove('wrong-match', 'selected');
+        selectedRight.classList.remove('wrong-match', 'selected');
+        selectedLeft = null; selectedRight = null;
+      }, 600);
+      return;
+    }
+    selectedLeft = null; selectedRight = null;
+  }
+}
+function updateMatchScore() {
+  const total = matchData.length;
+  const done = Object.keys(matchPairs).length;
+  document.getElementById('score-match-text').textContent = `${done} / ${total} parejas correctas`;
+  if (done === total) {
+    document.getElementById('score-match-text').innerHTML += ' <span style="color:var(--accent-green); font-weight:700;">🎉 ¡Completado!</span>';
+  }
+}
+function resetMatch() { matchPairs = {}; selectedLeft = null; selectedRight = null; buildMatch(); document.getElementById('score-match-text').textContent = '0 / 5 parejas correctas'; }
+buildMatch();
+
+/* ============================
+   SIMULADOR CANVAS INTERACTIVO (PASO A PASO)
+   ============================ */
+const cSim = document.getElementById('canvas-sim');
+const ctxSim = cSim.getContext('2d');
+let simPhase = 0;
+let simParticles = [];
+let simW = 0, simH = 0;
+function resizeSim() {
+  const rect = cSim.parentElement.getBoundingClientRect();
+  cSim.width = rect.width; cSim.height = 320;
+  simW = cSim.width; simH = cSim.height;
+}
+window.addEventListener('resize', resizeSim);
+resizeSim();
+
+let hX = 0; // posición X de la herida (centro del vaso)
+function initSimParticles() {
+  simParticles = [];
+  hX = simW/2;
+  // Eritrocitos (flujo lento y pausado)
+  for (let i = 0; i < 6; i++) simParticles.push({ x: 40+Math.random()*(simW-80), y: 90+Math.random()*170, vx: 0.12+Math.random()*0.14, vy: 0, r: 13, type: 'rbc', color: '#dc2626' });
+  // Neutrófilos (velocidad lenta)
+  for (let i = 0; i < 3; i++) simParticles.push({ x: 40+Math.random()*(simW-80), y: 90+Math.random()*170, vx: 0.09+Math.random()*0.1, vy: 0, r: 10, type: 'neutrophil', color: '#60a5fa' });
+  // Monocitos (velocidad lenta)
+  for (let i = 0; i < 2; i++) simParticles.push({ x: 40+Math.random()*(simW-80), y: 90+Math.random()*170, vx: 0.07+Math.random()*0.09, vy: 0, r: 13, type: 'monocyte', color: '#22c55e' });
+  // Megacariocito (representación en la esquina)
+  simParticles.push({ x: simW-60, y: simH-58, vx: 0, vy: 0, r: 20, type: 'megakaryocyte', color: '#a855f7' });
+}
+initSimParticles();
+
+function spawnPlatelet() {
+  simParticles.push({
+    x: 25, y: 110+Math.random()*130, vx: 0.2, vy: 0,
+    r: 9, type: 'platelet', color: '#ef4444',
+    stuck: false,
+    slotX: (Math.random()-0.5)*85,  // apilamiento horizontal dentro de la herida
+    slotY: Math.random()*48          // altura de apilamiento
+  });
+}
+
+function setSimPhase(p) {
+  simPhase = p;
+  document.querySelectorAll('#sim .canvas-controls button').forEach((b,i) => b.classList.toggle('active', i===p));
+  // Sincronizar plaquetas según la fase (idempotente)
+  if (p < 2) {
+    simParticles = simParticles.filter(pt => pt.type !== 'platelet');
+  } else if (p === 2 || p === 3 || p === 4) {
+    if (!simParticles.some(pt => pt.type === 'platelet')) {
+      for (let i = 0; i < 9; i++) spawnPlatelet();
+    }
+    if (p >= 3) simParticles.forEach(pt => { if (pt.type === 'platelet') pt.stuck = true; });
+  }
+  if (p === 5) {
+    // Coágulo: el flujo se detiene en la zona
+    simParticles.forEach(pt => { if (pt.type === 'rbc') { pt.vx = 0; pt.vy = 0; } });
+  }
+  if (p === 6) {
+    // Reparado: limpiar plaquetas, restaurar flujo
+    simParticles = simParticles.filter(pt => pt.type !== 'platelet');
+    simParticles.forEach(pt => { if (pt.type === 'rbc' && pt.vx === 0) pt.vx = 0.12+Math.random()*0.14; });
+  }
+}
+
+// Etiqueta con fondo para legibilidad
+function simLabel(text, x, y, color) {
+  ctxSim.font = 'bold 11px sans-serif';
+  const tw = ctxSim.measureText(text).width;
+  ctxSim.fillStyle = 'rgba(255,255,255,0.88)';
+  ctxSim.fillRect(x-4, y-12, tw+8, 16);
+  ctxSim.fillStyle = color;
+  ctxSim.fillText(text, x, y);
+}
+
+function drawSim() {
+  ctxSim.clearRect(0,0,simW,simH);
+  hX = simW/2;
+  // ===== 1. TEJIDO EXTERIOR (fondo) =====
+  ctxSim.fillStyle = '#fff1f2';
+  ctxSim.fillRect(0, 0, simW, simH);
+
+  // ===== 2. SANGRE (interior del vaso) =====
+  ctxSim.fillStyle = '#fecaca';
+  ctxSim.fillRect(20, 38, simW-40, simH-76);
+
+  // ===== 3. PAREDES DEL VASO =====
+  ctxSim.fillStyle = '#b91c1c';
+  ctxSim.fillRect(20, simH-38, simW-40, 12); // pared inferior (siempre completa)
+  const wallIntact = (simPhase === 0 || simPhase === 6);
+  if (wallIntact) {
+    ctxSim.fillRect(20, 38, simW-40, 12); // pared superior completa
+  } else {
+    ctxSim.fillRect(20, 38, (hX-62)-20, 12);   // tramo izquierdo
+    ctxSim.fillRect(hX+62, 38, (simW-20)-(hX+62), 12); // tramo derecho
+  }
+
+  // ===== 4. CÉLULAS ENDOTELIALES (fase 0) =====
+  if (simPhase === 0) {
+    ctxSim.fillStyle = '#fda4af';
+    ctxSim.fillRect(20, 38, simW-40, 12);
+    simLabel('Células endoteliales (barrera anti-coagulante)', 30, 33, '#9f1239');
+  }
+
+  // ===== 5. HERIDA (fases 1 a 5): abertura en la pared superior =====
+  if (simPhase >= 1 && simPhase <= 5) {
+    // Masa de tejido dañado (carne de la herida)
+    ctxSim.fillStyle = '#881337';
+    ctxSim.beginPath();
+    ctxSim.moveTo(hX-62, 38);
+    ctxSim.lineTo(hX-52, 68);
+    ctxSim.lineTo(hX-30, 58);
+    ctxSim.lineTo(hX-8, 72);
+    ctxSim.lineTo(hX+18, 59);
+    ctxSim.lineTo(hX+40, 70);
+    ctxSim.lineTo(hX+62, 38);
+    ctxSim.closePath();
+    ctxSim.fill();
+    ctxSim.strokeStyle = '#be123c'; ctxSim.lineWidth = 2; ctxSim.stroke();
+    // Palabra HERIDA dentro de la herida
+    ctxSim.fillStyle = '#fff'; ctxSim.font = 'bold 11px sans-serif';
+    ctxSim.fillText('HERIDA', hX-24, 56);
+    // Gotas de sangre cayendo desde la herida hacia el interior (fases 1-2)
+    if (simPhase <= 2) {
+      ctxSim.fillStyle = '#dc2626';
+      const t = (Date.now() * 0.05) % 65;
+      for (let i = 0; i < 5; i++) {
+        const gx = hX - 42 + i * 21;
+        const gy = 76 + ((t + i * 14) % 65);
+        ctxSim.beginPath(); ctxSim.arc(gx, gy, 3, 0, Math.PI*2); ctxSim.fill();
+      }
+    }
+  }
+
+  // ===== 6. COLÁGENO EXUESTO (fases 2 a 5): colgando de la herida =====
+  if (simPhase >= 2 && simPhase <= 5) {
+    ctxSim.fillStyle = '#fdba74';
+    ctxSim.beginPath();
+    ctxSim.moveTo(hX-58, 50);
+    ctxSim.lineTo(hX-46, 88);
+    ctxSim.lineTo(hX-20, 78);
+    ctxSim.lineTo(hX+2, 92);
+    ctxSim.lineTo(hX+28, 80);
+    ctxSim.lineTo(hX+50, 90);
+    ctxSim.lineTo(hX+58, 50);
+    ctxSim.closePath();
+    ctxSim.fill();
+    ctxSim.strokeStyle = '#ea580c'; ctxSim.lineWidth = 1.5; ctxSim.stroke();
+    simLabel('Colágeno expuesto', hX+70, 78, '#9a3412');
+    // Factor vW sobre el colágeno (fases 2-4)
+    if (simPhase <= 4) {
+      ctxSim.fillStyle = '#8b5cf6';
+      ctxSim.fillRect(hX-40, 66, 18, 6); ctxSim.fillRect(hX-8, 72, 18, 6); ctxSim.fillRect(hX+24, 68, 18, 6);
+      simLabel('vW', hX-70, 66, '#5b21b6');
+    }
+  }
+
+  // ===== 7. PARTÍCULAS (células sanguíneas) =====
+  simParticles.forEach(pt => {
+    // Plaquetas: atraídas suavemente hacia la herida (fases 2-4)
+    if (pt.type === 'platelet') {
+      if (!pt.stuck && simPhase >= 2 && simPhase <= 4) {
+        const tx = hX + pt.slotX, ty = 78 + pt.slotY;
+        pt.x += (tx - pt.x) * 0.022;  // movimiento lento y visible
+        pt.y += (ty - pt.y) * 0.022;
+        if (Math.abs(pt.x - tx) < 2.5 && Math.abs(pt.y - ty) < 2.5) pt.stuck = true;
+      }
+    } else if (simPhase !== 5) {
+      // Flujo lento de la sangre
+      pt.x += pt.vx;
+      pt.y += Math.sin(Date.now()*0.001 + pt.x*0.02) * 0.12;
+      if (pt.x > simW - 38) pt.x = 30;
+      if (pt.y < 78) pt.y = 78;
+      if (pt.y > simH - 52) pt.y = simH - 52;
+    }
+    // Dibujo de cada tipo
+    ctxSim.beginPath();
+    if (pt.type === 'rbc') {
+      ctxSim.ellipse(pt.x, pt.y, pt.r, pt.r*0.7, 0, 0, Math.PI*2);
+      ctxSim.fillStyle = pt.color; ctxSim.fill(); ctxSim.stroke();
+    } else if (pt.type === 'megakaryocyte') {
+      ctxSim.arc(pt.x, pt.y, pt.r, 0, Math.PI*2);
+      ctxSim.fillStyle = pt.color; ctxSim.fill(); ctxSim.stroke();
+      ctxSim.beginPath(); ctxSim.arc(pt.x-9, pt.y-7, 5, 0, Math.PI*2); ctxSim.fillStyle = '#c084fc'; ctxSim.fill(); ctxSim.stroke();
+      ctxSim.beginPath(); ctxSim.arc(pt.x+9, pt.y+5, 4.5, 0, Math.PI*2); ctxSim.fillStyle = '#c084fc'; ctxSim.fill(); ctxSim.stroke();
+      ctxSim.beginPath(); ctxSim.arc(pt.x-5, pt.y+9, 4.5, 0, Math.PI*2); ctxSim.fillStyle = '#c084fc'; ctxSim.fill(); ctxSim.stroke();
+      ctxSim.fillStyle = '#1e293b'; ctxSim.font = 'bold 10px sans-serif';
+      ctxSim.fillText('Mega', pt.x-12, pt.y + pt.r + 13);
+    } else if (pt.type === 'neutrophil') {
+      ctxSim.arc(pt.x, pt.y, pt.r, 0, Math.PI*2);
+      ctxSim.fillStyle = pt.color; ctxSim.fill(); ctxSim.stroke();
+      ctxSim.beginPath(); ctxSim.arc(pt.x-3, pt.y-3, 2.5, 0, Math.PI*2); ctxSim.fillStyle = '#dbeafe'; ctxSim.fill();
+      ctxSim.beginPath(); ctxSim.arc(pt.x+3, pt.y+2, 2, 0, Math.PI*2); ctxSim.fillStyle = '#dbeafe'; ctxSim.fill();
+      ctxSim.beginPath(); ctxSim.arc(pt.x-2, pt.y+3, 2, 0, Math.PI*2); ctxSim.fillStyle = '#dbeafe'; ctxSim.fill();
+      ctxSim.fillStyle = '#1e293b'; ctxSim.font = 'bold 10px sans-serif';
+      ctxSim.fillText('Neu', pt.x-9, pt.y + pt.r + 12);
+    } else if (pt.type === 'monocyte') {
+      ctxSim.arc(pt.x, pt.y, pt.r, 0, Math.PI*2);
+      ctxSim.fillStyle = pt.color; ctxSim.fill(); ctxSim.stroke();
+      ctxSim.beginPath(); ctxSim.arc(pt.x, pt.y, 6, 0, Math.PI*2); ctxSim.fillStyle = '#86efac'; ctxSim.fill();
+      ctxSim.fillStyle = '#1e293b'; ctxSim.font = 'bold 10px sans-serif';
+      ctxSim.fillText('Mon', pt.x-9, pt.y + pt.r + 12);
+    } else { // platelet
+      ctxSim.arc(pt.x, pt.y, pt.r, 0, Math.PI*2);
+      ctxSim.fillStyle = pt.color; ctxSim.fill(); ctxSim.stroke();
+      ctxSim.beginPath(); ctxSim.arc(pt.x, pt.y, 3.5, 0, Math.PI*2); ctxSim.fillStyle = '#fca5a5'; ctxSim.fill();
+    }
+  });
+
+  // ===== 8. TAPÓN PLAQUETARIO (fase 3-4): refuerzo visual sobre la herida =====
+  if (simPhase === 3 || simPhase === 4) {
+    simLabel('TAPÓN PLAQUETARIO', hX-58, 148, '#9f1239');
+    // flecha indicando
+    ctxSim.strokeStyle = '#9f1239'; ctxSim.lineWidth = 1.5;
+    ctxSim.beginPath(); ctxSim.moveTo(hX, 140); ctxSim.lineTo(hX, 120); ctxSim.stroke();
+  }
+
+  // ===== 9. RED DE FIBRINA (fases 4-5): hilos sobre el tapón EN la herida =====
+  if (simPhase >= 4 && simPhase <= 5) {
+    ctxSim.strokeStyle = '#f59e0b'; ctxSim.lineWidth = 2;
+    for (let i = 0; i < 7; i++) {
+      ctxSim.beginPath();
+      ctxSim.moveTo(hX-56 + i*18, 62 + Math.sin(i)*12);
+      ctxSim.lineTo(hX-40 + i*18, 100 + Math.cos(i)*12);
+      ctxSim.lineTo(hX-24 + i*18, 72 + Math.sin(i+2)*12);
+      ctxSim.stroke();
+    }
+    simLabel('Red de fibrina', hX+70, 112, '#92400e');
+  }
+
+  // ===== 10. COÁGULO ESTABLE (fase 5): masa que sella la herida =====
+  if (simPhase === 5) {
+    ctxSim.fillStyle = '#9f1239';
+    ctxSim.beginPath();
+    ctxSim.moveTo(hX-60, 38);
+    ctxSim.lineTo(hX-50, 100);
+    ctxSim.quadraticCurveTo(hX, 128, hX+50, 100);
+    ctxSim.lineTo(hX+60, 38);
+    ctxSim.closePath();
+    ctxSim.fill();
+    ctxSim.strokeStyle = '#701a36'; ctxSim.lineWidth = 2; ctxSim.stroke();
+    // Eritrocitos atrapados dentro de la masa
+    ctxSim.fillStyle = '#dc2626';
+    [[-30,60],[0,78],[28,62],[-12,95],[18,92],[-38,85],[38,80]].forEach(([ox,oy]) => {
+      ctxSim.beginPath(); ctxSim.ellipse(hX+ox, oy, 9, 6, 0, 0, Math.PI*2); ctxSim.fill();
+    });
+    // Hilos de fibrina sobre la superficie
+    ctxSim.strokeStyle = '#f59e0b'; ctxSim.lineWidth = 1.5;
+    for (let i = 0; i < 4; i++) {
+      ctxSim.beginPath();
+      ctxSim.moveTo(hX-45+i*25, 55+Math.sin(i)*10);
+      ctxSim.lineTo(hX-30+i*25, 85+Math.cos(i)*10);
+      ctxSim.stroke();
+    }
+    simLabel('COÁGULO ESTABLE', hX+70, 95, '#701a36');
+  }
+
+  // ===== 11. REPARADO (fase 6): cicatriz =====
+  if (simPhase === 6) {
+    ctxSim.fillStyle = '#fda4af';
+    ctxSim.fillRect(hX-22, 38, 44, 12);
+    ctxSim.strokeStyle = '#f43f5e'; ctxSim.lineWidth = 1;
+    ctxSim.strokeRect(hX-22, 38, 44, 12);
+    simLabel('Cicatriz: endotelio restaurado', hX-80, 33, '#9f1239');
+  }
+
+  // ===== 12. BARRA DE ESTADO (arriba, legible) =====
+  ctxSim.fillStyle = 'rgba(255,255,255,0.94)';
+  ctxSim.fillRect(0, 0, simW, 26);
+  ctxSim.fillStyle = '#cbd5e1';
+  ctxSim.fillRect(0, 26, simW, 1);
+  ctxSim.fillStyle = '#1e293b'; ctxSim.font = 'bold 13px sans-serif';
+  const status = ['1️⃣ Vaso sano — endotelio íntegro, flujo normal','2️⃣ ¡HERIDA! Se rompe el endotelio y sale sangre','3️⃣ Las plaquetas llegan y se pegan al colágeno','4️⃣ TAPÓN PLAQUETARIO formado en la herida','5️⃣ La FIBRINA teje su red sobre el tapón','6️⃣ COÁGULO ESTABLE — sangrado detenido','7️⃣ Vaso REPARADO — fibrinólisis y cicatriz'][simPhase];
+  ctxSim.fillText(status, 12, 18);
+
+  requestAnimationFrame(drawSim);
+}
+drawSim();
+
+// Click en canvas para mostrar info
+const simLegend = {
+  platelet: { title: 'Plaquetas (trombocitos)', desc: 'Fragmentos sin núcleo producidos por megacariocitos. Se adhieren al colágeno (vía factor vW) y liberan ADP, serotonina y tromboxano A2 para formar el tapón plaquetario. Son los "ladrillos" de emergencia.' },
+  rbc: { title: 'Eritrocitos (glóbulos rojos)', desc: 'Transportan oxígeno mediante hemoglobina. En la hemostasia quedan atrapados en la red de fibrina, dándole color rojo al coágulo. No tienen núcleo ni participan activamente en la coagulación.' },
+  neutrophil: { title: 'Neutrófilos', desc: 'Leucocitos más abundantes. Durante la hemostasia liberan NETs (trampas extracelulares de ADN) que capturan bacterias y activan plaquetas y la cascada de coagulación, colaborando en la defensa del sitio lesionado (McDonald et al., 2017, PMC5345735).' },
+  monocyte: { title: 'Monocitos', desc: 'Leucocitos que, al activarse por citocinas o LPS, expresan factor tisular (TF) en su membrana. El TF inicia la vía extrínseca de la coagulación uniéndose al factor VIIa. También fagocitan restos del coágulo durante la reparación (Cimmino et al., 2018, PMC6232348).' },
+  megakaryocyte: { title: 'Megacariocitos', desc: 'Células gigantes de la médula ósea que producen plaquetas por fragmentación de su citoplasma. También sintetizan factor von Willebrand (vW), esencial para la adhesión plaquetaria (The Medical Biochemistry Page).' },
+  fibrin: { title: 'Red de fibrina', desc: 'Proteína insoluble formada por acción de la trombina sobre el fibrinógeno. Actúa como "cemento" que atrapa eritrocitos y plaquetas, estabilizando el coágulo definitivo. El factor XIII refuerza la red con enlaces cruzados.' },
+  vwf: { title: 'Factor von Willebrand', desc: 'Glicoproteína producida por células endoteliales y megacariocitos. Actúa como puente entre las plaquetas (GPIb) y el colágeno del vaso lesionado. También transporta y estabiliza el factor VIII de la coagulación.' },
+  endothelial: { title: 'Células endoteliales', desc: 'Recubren el interior de los vasos sanguíneos. Intactas liberan prostaciclina, óxido nítrico y heparan sulfato para PREVENIR la coagulación. Al lesionarse, expresan factor tisular, liberan vW y exponen colágeno, iniciando la hemostasia (Olgasi et al., 2024, Haematologica).' }
+};
+
+function showLegend(type) {
+  const info = simLegend[type];
+  if (!info) return;
+  const panel = document.getElementById('sim-panel-info');
+  document.getElementById('sim-info-title').textContent = info.title;
+  document.getElementById('sim-info-desc').textContent = info.desc;
+  panel.style.display = 'block';
+  setTimeout(() => { panel.style.display = 'none'; }, 7000);
+}
+
+cSim.addEventListener('click', e => {
+  const rect = cSim.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  for (const pt of simParticles) {
+    const dx = mx - pt.x, dy = my - pt.y;
+    if (Math.sqrt(dx*dx + dy*dy) < pt.r + 6) {
+      showLegend(pt.type); return;
+    }
+  }
+  // Clic en células endoteliales (pared del vaso, franja superior y=38-50)
+  if (my >= 38 && my <= 52 && mx >= 20 && mx <= simW-20) {
+    showLegend('endothelial'); return;
+  }
+  // Clic en zona de fibrina (sobre el tapón, colgando de la herida)
+  if (simPhase >= 4 && simPhase <= 5 && mx > hX-75 && mx < hX+75 && my > 55 && my < 125) {
+    showLegend('fibrin'); return;
+  }
+  // Clic en zona de vW / colágeno expuesto en la herida
+  if (simPhase >= 2 && simPhase <= 4 && mx > hX-70 && mx < hX+70 && my > 55 && my < 100) {
+    showLegend('vwf'); return;
+  }
+  document.getElementById('sim-panel-info').style.display = 'none';
+});
+
+/* ============================
+   MAPA CONCEPTUAL (CIERRE 1) — JUEGO DE ORDENAMIENTO
+   ============================ */
+const mapItems = [
+  { text: "Vasoconstricción refleja", step: 1 },
+  { text: "Adhesión plaquetaria al colágeno", step: 2 },
+  { text: "Liberación de ADP y tromboxano A2", step: 3 },
+  { text: "Agregación plaquetaria (tapón)", step: 4 },
+  { text: "Activación de la cascada de coagulación", step: 5 },
+  { text: "Conversión de fibrinógeno a fibrina", step: 6 },
+  { text: "Formación de la red de fibrina (coágulo)", step: 7 },
+  { text: "Fibrinólisis (plasmina)", step: 8 }
+];
+let currentMapStep = 1;
+let mapOrder = [];
+function buildMap() {
+  currentMapStep = 1;
+  mapOrder = shuffle([...mapItems]);
+  const container = document.getElementById('map-conceptual');
+  container.innerHTML = mapOrder.map((item, i) =>
+    `<div class="map-box" id="map-${i}" onclick="checkMapStep(${i}, ${item.step})">
+      <span style="font-size:0.85rem; font-weight:600; color:var(--text-dark); text-align:center;">${item.text}</span>
+    </div>`
+  ).join('');
+  document.getElementById('map-score-text').textContent = `Paso actual: 1 de 8`;
+  document.getElementById('map-score-bar').style.width = '0%';
+}
+function checkMapStep(index, step) {
+  const el = document.getElementById(`map-${index}`);
+  if (el.classList.contains('revealed') || el.classList.contains('wrong-map')) return;
+  if (step === currentMapStep) {
+    el.innerHTML = `<span style="font-weight:700; color:var(--accent-green);">✅ ${step}. ${mapOrder[index].text}</span>`;
+    el.classList.add('revealed');
+    currentMapStep++;
+    const pct = ((currentMapStep - 1) / 8) * 100;
+    document.getElementById('map-score-bar').style.width = pct + '%';
+    if (currentMapStep > 8) {
+      document.getElementById('map-score-text').innerHTML = '<span style="color:var(--accent-green); font-weight:700;">🎉 ¡Secuencia completada correctamente! Gran trabajo.</span>';
+    } else {
+      document.getElementById('map-score-text').textContent = `Paso actual: ${currentMapStep} de 8`;
+    }
+  } else {
+    el.classList.add('wrong-map');
+    el.style.background = 'var(--accent-red-light)';
+    el.style.borderColor = 'var(--accent-red)';
+    el.innerHTML = `<span style="font-weight:700; color:var(--accent-red);">❌ ${mapOrder[index].text}</span>`;
+    setTimeout(() => {
+      el.classList.remove('wrong-map');
+      el.style.background = '';
+      el.style.borderColor = '';
+      el.innerHTML = `<span style="font-size:0.85rem; font-weight:600; color:var(--text-dark); text-align:center;">${mapOrder[index].text}</span>`;
+    }, 1000);
+  }
+}
+function resetMap() { buildMap(); }
+buildMap();
+
+/* ============================
+   SOPA DE LETRAS (CIERRE 2)
+   ============================ */
+const wsWords = ['PLAQUETAS', 'FIBRINA', 'HEMOSTASIA', 'TROMBINA', 'NEUTROFILO', 'MONOCITO', 'COAGULO', 'PLASMINA'];
+const wsSize = 13;
+let wsGrid = [];
+let wsFound = new Set();
+let wsFirstCell = null;
+
+function buildWordsearch() {
+  wsFound = new Set();
+  wsFirstCell = null;
+  wsGrid = Array.from({length: wsSize}, () => Array(wsSize).fill(''));
+  // Rellenar con letras aleatorias
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (let r = 0; r < wsSize; r++)
+    for (let c = 0; c < wsSize; c++)
+      wsGrid[r][c] = letters[Math.floor(Math.random() * 26)];
+  // Colocar palabras en direcciones aleatorias
+  const dirs = [[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]];
+  const placed = [];
+  wsWords.forEach(word => {
+    let ok = false, attempts = 0;
+    while (!ok && attempts < 300) {
+      attempts++;
+      const d = dirs[Math.floor(Math.random() * dirs.length)];
+      const r0 = Math.floor(Math.random() * wsSize);
+      const c0 = Math.floor(Math.random() * wsSize);
+      const rEnd = r0 + d[0] * (word.length - 1);
+      const cEnd = c0 + d[1] * (word.length - 1);
+      if (rEnd < 0 || rEnd >= wsSize || cEnd < 0 || cEnd >= wsSize) continue;
+      let fits = true;
+      for (let i = 0; i < word.length; i++) {
+        const cell = wsGrid[r0 + d[0]*i][c0 + d[1]*i];
+        if (cell !== '' && cell !== word[i]) { fits = false; break; }
+      }
+      if (!fits) continue;
+      const cells = [];
+      for (let i = 0; i < word.length; i++) {
+        const rr = r0 + d[0]*i, cc = c0 + d[1]*i;
+        wsGrid[rr][cc] = word[i];
+        cells.push([rr, cc]);
+      }
+      placed.push({ word, cells });
+      ok = true;
+    }
+  });
+  wsPlaced = placed;
+  renderWordsearch();
+  document.getElementById('ws-score-text').textContent = `0 / ${placed.length} encontradas`;
+}
+let wsPlaced = [];
+
+function renderWordsearch() {
+  const grid = document.getElementById('wordsearch-grid');
+  grid.style.gridTemplateColumns = `repeat(${wsSize}, 1fr)`;
+  let html = '';
+  for (let r = 0; r < wsSize; r++) {
+    for (let c = 0; c < wsSize; c++) {
+      html += `<div class="ws-cell" id="ws-${r}-${c}" onclick="wsClick(${r}, ${c})" style="width:30px; height:30px; display:flex; align-items:center; justify-content:center; border:1px solid #cbd5e1; background:#fff; font-weight:700; font-size:0.85rem; cursor:pointer; border-radius:3px;">${wsGrid[r][c]}</div>`;
+    }
+  }
+  grid.innerHTML = html;
+  const wl = document.getElementById('wordsearch-words');
+  wl.innerHTML = wsPlaced.map(p =>
+    `<li id="ws-word-${p.word}" style="padding:0.15rem 0;">${p.word} <span class="ws-check" style="display:none; color:var(--accent-green); font-weight:700;">✔</span></li>`
+  ).join('');
+}
+
+function wsClick(r, c) {
+  if (!wsFirstCell) {
+    wsFirstCell = [r, c];
+    document.getElementById(`ws-${r}-${c}`).style.background = 'var(--accent-blue-light)';
+    document.getElementById(`ws-${r}-${c}`).style.borderColor = 'var(--accent-blue)';
+    return;
+  }
+  const [r0, c0] = wsFirstCell;
+  // Restaurar primera celda
+  document.getElementById(`ws-${r0}-${c0}`).style.background = '#fff';
+  document.getElementById(`ws-${r0}-${c0}`).style.borderColor = '#cbd5e1';
+  // Verificar si forma línea recta
+  const dr = r - r0, dc = c - c0;
+  const len = Math.max(Math.abs(dr), Math.abs(dc)) + 1;
+  const stepR = Math.sign(dr), stepC = Math.sign(dc);
+  if (!(dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc))) { wsFirstCell = null; return; }
+  // Extraer palabra formada
+  let word = '';
+  const cells = [];
+  for (let i = 0; i < len; i++) {
+    const rr = r0 + stepR*i, cc = c0 + stepC*i;
+    if (rr < 0 || rr >= wsSize || cc < 0 || cc >= wsSize) { word = ''; break; }
+    word += wsGrid[rr][cc];
+    cells.push([rr, cc]);
+  }
+  const reversed = word.split('').reverse().join('');
+  const hit = wsPlaced.find(p => (p.word === word || p.word === reversed) && !wsFound.has(p.word));
+  if (hit) {
+    wsFound.add(hit.word);
+    hit.cells.forEach(([rr, cc]) => {
+      const el = document.getElementById(`ws-${rr}-${cc}`);
+      el.style.background = 'var(--accent-green-light)';
+      el.style.borderColor = 'var(--accent-green)';
+      el.style.color = 'var(--accent-green)';
+    });
+    const li = document.getElementById(`ws-word-${hit.word}`);
+    if (li) { li.style.textDecoration = 'line-through'; li.querySelector('.ws-check').style.display = 'inline'; }
+    document.getElementById('ws-score-text').textContent = `${wsFound.size} / ${wsPlaced.length} encontradas`;
+    if (wsFound.size === wsPlaced.length) {
+      document.getElementById('ws-score-text').innerHTML = '<span style="color:var(--accent-green); font-weight:700;">🎉 ¡Encontraste todas las palabras!</span>';
+    }
+  }
+  wsFirstCell = null;
+}
+
+function revealWordsearch() {
+  wsPlaced.forEach(p => {
+    if (!wsFound.has(p.word)) {
+      wsFound.add(p.word);
+      p.cells.forEach(([rr, cc]) => {
+        const el = document.getElementById(`ws-${rr}-${cc}`);
+        el.style.background = 'var(--accent-yellow-light)';
+        el.style.borderColor = 'var(--accent-yellow)';
+      });
+      const li = document.getElementById(`ws-word-${p.word}`);
+      if (li) { li.style.textDecoration = 'line-through'; li.querySelector('.ws-check').style.display = 'inline'; }
+    }
+  });
+  document.getElementById('ws-score-text').textContent = `${wsFound.size} / ${wsPlaced.length} encontradas (solución mostrada)`;
+}
+buildWordsearch();
+
+/* ============================
+   CUADRO COMPARATIVO (CIERRE 3)
+   ============================ */
+function checkComparisonTable() {
+  const inputs = document.querySelectorAll('#close3 input[data-answer]');
+  let correct = 0, total = 0;
+  inputs.forEach(inp => {
+    total++;
+    const val = inp.value.trim().toLowerCase();
+    const accepted = inp.getAttribute('data-answer').split('|');
+    if (val && accepted.some(a => val.includes(a))) {
+      inp.style.background = 'var(--accent-green-light)';
+      correct++;
+    } else {
+      inp.style.background = 'var(--accent-red-light)';
+    }
+  });
+  const msg = document.getElementById('table-score-text');
+  msg.textContent = `${correct} / ${total} respuestas correctas. ${correct === total ? '🎉 ¡Excelente!' : 'Revisa las marcadas en rojo.'}`;
+  msg.style.color = correct === total ? 'var(--accent-green)' : 'var(--accent-red)';
+}
+function clearComparisonTable() {
+  document.querySelectorAll('#close3 input[data-answer]').forEach(inp => {
+    inp.value = '';
+    inp.style.background = '';
+  });
+  document.getElementById('table-score-text').textContent = '';
+}
+
+</script>
+</body>
+</html>
